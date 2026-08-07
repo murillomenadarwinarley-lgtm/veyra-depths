@@ -37,6 +37,10 @@ func grant_ability(ability_id: String, level: int = 1) -> void:
 	ability_unlocked.emit(ability_id, level)
 	# TODO: aplicar efectos (habilidad con effect_script en su definición)
 
+## Quita una habilidad desbloqueada (debug, cheats y tests).
+func revoke_ability(ability_id: String) -> void:
+	unlocked_abilities.erase(ability_id)
+
 func mark_room_visited(room_id: String) -> void:
 	if rooms_visited.has(room_id):
 		return

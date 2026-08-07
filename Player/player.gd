@@ -87,6 +87,27 @@ func do_jump() -> void:
 	consume_coyote()
 	clear_jump_buffer()
 
+## Límite de saltos aéreos: 1 base, +1 con doble salto desbloqueado.
+func air_jump_limit() -> int:
+	return 1 + (1 if Progress.has_ability("double_jump") else 0)
+
+## True si puede hacer un salto aéreo (doble salto): en el aire,
+## sin coyote y con saltos aéreos restantes. Se resetea al aterrizar.
+func can_double_jump() -> bool:
+	return not is_on_floor() and _air_jumps < air_jump_limit()
+
+## Salto aéreo: re-aplica el impulso vertical sin tocar suelo.
+## No consume coyote ni buffer.
+func do_air_jump() -> void:
+	velocity.y = jump_velocity
+	_air_jumps += 1
+	_jumped_this_frame = true
+	clear_jump_buffer()
+
+## Saltos aéreos consumidos en este vuelo (para tests).
+func air_jumps_used() -> int:
+	return _air_jumps
+
 func can_dash() -> bool:
 	return _dash_cooldown_left <= 0.0
 

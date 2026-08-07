@@ -5,6 +5,9 @@ func physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("jump") and not player.is_on_floor() and player.can_coyote_jump():
 		player.do_jump()
 		return
+	if Input.is_action_just_pressed("jump") and player.can_double_jump():
+		player.do_air_jump()
+		return
 	player.apply_gravity(delta)
 	var axis := player.get_move_axis()
 	if axis != 0.0:
