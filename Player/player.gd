@@ -158,6 +158,7 @@ func _register_states() -> void:
 	state_machine.add_state(&"jump", PlayerJumpState.new(state_machine, self))
 	state_machine.add_state(&"dash", PlayerDashState.new(state_machine, self))
 	state_machine.add_state(&"attack", PlayerAttackState.new(state_machine, self))
+	state_machine.add_state(&"spell", PlayerSpellState.new(state_machine, self))
 	state_machine.add_state(&"focus", PlayerFocusState.new(state_machine, self))
 	state_machine.add_state(&"hurt", PlayerHurtState.new(state_machine, self))
 	state_machine.change_to(&"idle")

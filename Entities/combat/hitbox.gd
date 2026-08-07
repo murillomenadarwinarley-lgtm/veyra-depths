@@ -24,6 +24,9 @@ signal hit(hurtbox: Area2D)
 @export var invulnerability_duration: float = -1.0
 
 var active: bool = false
+## Atacante reportado (por defecto el padre). Lo usan los proyectiles del
+## jugador para que el knockback salga desde el jugador, no del proyectil.
+var attacker_override: Node2D = null
 
 var _last_hit_time: float = -INF
 
@@ -46,6 +49,8 @@ func set_direction(dir: Vector2) -> void:
 
 ## El nodo que ataca (el padre). Se usa para calcular el knockback.
 func get_attacker() -> Node2D:
+	if attacker_override != null:
+		return attacker_override
 	return get_parent() as Node2D
 
 func _on_area_entered(area: Area2D) -> void:

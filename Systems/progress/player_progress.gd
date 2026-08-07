@@ -27,6 +27,9 @@ var soul: int = 0
 const MAX_SOUL := 100
 const SOUL_PER_HIT := 6
 const FOCUS_COST := 30
+## Coste del hechizo de alma: más barato que Focus para que sirva como
+## gasto ofensivo frecuente sin vaciar la reserva defensiva.
+const SPELL_COST := 25
 
 var playtime_seconds: float = 0.0
 var deaths: int = 0
