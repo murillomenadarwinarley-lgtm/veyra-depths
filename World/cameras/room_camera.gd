@@ -11,8 +11,9 @@ func setup(room_bounds: Dictionary) -> void:
 	var top: float = room_bounds.get("top", 0.0)
 	var right: float = room_bounds.get("right", left + 1024.0)
 	var bottom: float = room_bounds.get("bottom", top + 600.0)
-	limit_left = int(left - global_position.x)
-	limit_top = int(top - global_position.y)
-	limit_right = int(right - global_position.x)
-	limit_bottom = int(bottom - global_position.y)
+	# Los límites de Camera2D son coordenadas absolutas del mundo.
+	limit_left = int(left)
+	limit_top = int(top)
+	limit_right = int(right)
+	limit_bottom = int(bottom)
 	offset = view_offset
