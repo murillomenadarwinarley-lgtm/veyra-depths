@@ -19,7 +19,7 @@ func _ready() -> void:
 
 ## El WorldRoot se crea perezosamente: durante el _ready de los autoloads
 ## el root aún está montando hijos y add_child fallaría.
-func _get_world_root() -> Node2D:
+func get_world_root() -> Node2D:
 	if _world_root == null:
 		_world_root = Node2D.new()
 		_world_root.name = "WorldRoot"
@@ -31,7 +31,7 @@ func _get_world_root() -> Node2D:
 func bootstrap() -> void:
 	if player == null:
 		player = PLAYER_SCENE.instantiate()
-		_get_world_root().add_child(player)
+		get_world_root().add_child(player)
 	enter_room(WorldMap.start_room_id)
 
 func enter_room(room_id: String, spawn_marker: String = "") -> void:
@@ -75,7 +75,7 @@ func load_room(room_id: String) -> Node:
 	var room := scene.instantiate()
 	room.name = "Room_%s" % room_id
 	prune_defeated_enemies(room_id, room)
-	_get_world_root().add_child(room)
+	get_world_root().add_child(room)
 	loaded_rooms[room_id] = room
 	return room
 

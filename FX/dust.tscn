@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[node name="Dust" type="CPUParticles2D"]
+emitting = false
+amount = 8
+lifetime = 0.4
+one_shot = true
+explosiveness = 1.0
+initial_velocity_min = 20.0
+initial_velocity_max = 60.0
+gravity = Vector2(0, -80)
+scale_amount_min = 4.0
+scale_amount_max = 7.0
+color = Color(0.45, 0.42, 0.4, 0.5)

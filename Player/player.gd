@@ -25,6 +25,7 @@ var _dash_cooldown_left: float = 0.0
 var _attack_cooldown_left: float = 0.0
 var _air_jumps: int = 0
 var _jumped_this_frame := false
+var _was_in_air := false
 
 @onready var state_machine: StateMachine = $StateMachine
 @onready var health: HealthComponent = $Health
@@ -48,8 +49,11 @@ func _physics_process(delta: float) -> void:
 	if is_on_floor() and not _jumped_this_frame:
 		_coyote_time_left = coyote_time
 		_air_jumps = 0
+		if _was_in_air:
+			_on_landed()
 	else:
 		_coyote_time_left = maxf(_coyote_time_left - delta, 0.0)
+	_was_in_air = not is_on_floor()
 	_jumped_this_frame = false
 	_jump_buffer_time_left = maxf(_jump_buffer_time_left - delta, 0.0)
 	_dash_cooldown_left = maxf(_dash_cooldown_left - delta, 0.0)
@@ -89,6 +93,7 @@ func do_jump() -> void:
 	_jumped_this_frame = true
 	consume_coyote()
 	clear_jump_buffer()
+	Audio.play_sfx("jump")
 
 ## Límite de saltos aéreos: 1 base, +1 con doble salto desbloqueado.
 func air_jump_limit() -> int:
@@ -106,6 +111,7 @@ func do_air_jump() -> void:
 	_air_jumps += 1
 	_jumped_this_frame = true
 	clear_jump_buffer()
+	Audio.play_sfx("jump")
 
 ## Saltos aéreos consumidos en este vuelo (para tests).
 func air_jumps_used() -> int:
@@ -116,6 +122,8 @@ func can_dash() -> bool:
 
 func use_dash() -> void:
 	_dash_cooldown_left = dash_cooldown_time
+	Audio.play_sfx("dash")
+	Feel.dust(global_position + Vector2(0, 16))
 
 func can_attack() -> bool:
 	return _attack_cooldown_left <= 0.0
@@ -150,16 +158,29 @@ func take_damage(amount: int) -> void:
 func _on_health_changed(current: int, _max_health: int) -> void:
 	Progress.set_player_health(current)
 
+func _on_landed() -> void:
+	Feel.dust(global_position + Vector2(0, 18))
+	Audio.play_sfx("land")
+
 func _on_damaged(amount: int, source: Node) -> void:
 	var message := {"damage": amount}
 	if source is Node2D:
 		message["from"] = source.global_position
 	state_machine.change_to(&"hurt", message)
+	Feel.hitstop(0.05)
+	Feel.screen_shake(0.28)
+	Feel.flash(self, Color(1.0, 0.35, 0.35), 0.25)
+	Audio.play_sfx("hurt")
 
 func _on_died() -> void:
 	Progress.register_death()
+	Feel.burst(global_position, Color(0.0, 1.0, 1.0))
+	Feel.screen_shake(0.45)
+	Audio.play_sfx("death")
 	Game.trigger_game_over()
 
-func _on_attack_hit(_hurtbox: Area2D) -> void:
-	# TODO: feedback de golpe (sonido, partículas, hitstop)
-	pass
+func _on_attack_hit(hurtbox: Area2D) -> void:
+	Feel.hitstop(0.06)
+	Feel.screen_shake(0.18)
+	Feel.sparks(hurtbox.global_position)
+	Audio.play_sfx("hit")

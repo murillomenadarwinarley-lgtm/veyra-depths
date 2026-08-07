@@ -21,6 +21,7 @@ Saves="*res://Systems/save/save_manager.gd"
 WorldMap="*res://World/map/world_map.gd"
 RoomStreamer="*res://World/streaming/room_streamer.gd"
 Game="*res://Core/game_state.gd"
+Feel="*res://Core/feel/game_feel.gd"
 
 [input]
 

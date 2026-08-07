@@ -10,7 +10,8 @@ func enter(_message: Dictionary = {}) -> void:
 	player.use_attack()
 	player.attack_hitbox.set_direction(player.facing)
 	player.attack_hitbox.set_active(true)
-	# TODO: animación, SFX
+	Audio.play_sfx("whoosh")
+	Feel.slash(player.global_position + player.facing * 26.0, player.facing.angle())
 
 func exit() -> void:
 	player.attack_hitbox.set_active(false)
