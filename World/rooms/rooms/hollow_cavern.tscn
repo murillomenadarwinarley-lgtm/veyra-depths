@@ -1,0 +1,38 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://World/rooms/room.gd" id="1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(1920, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
+size = Vector2(64, 256)
+
+[node name="HollowCavern" type="Node2D"]
+script = ExtResource("1")
+room_id = "room_hollow_cavern"
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(960, -32)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="PlayerSpawn" type="Marker2D" parent="."]
+position = Vector2(320, -120)
+
+[node name="GateSouth" type="Area2D" parent="."]
+position = Vector2(960, -8)
+groups = ["room_gate"]
+metadata/gate_id = "gate_south"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GateSouth"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="GateNorth" type="Area2D" parent="."]
+position = Vector2(960, -1072)
+groups = ["room_gate"]
+metadata/gate_id = "gate_north"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GateNorth"]
+shape = SubResource("RectangleShape2D_2")

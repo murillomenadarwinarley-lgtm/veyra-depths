@@ -1,0 +1,7 @@
+# Godot
+.godot/
+
+# Archivos temporales
+*.tmp
+*.swp
+*.zip

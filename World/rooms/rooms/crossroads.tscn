@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://World/rooms/room.gd" id="1"]
+[ext_resource type="PackedScene" path="res://Entities/enemies/crawler.tscn" id="2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(1920, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
+size = Vector2(64, 256)
+
+[node name="Crossroads" type="Node2D"]
+script = ExtResource("1")
+room_id = "room_crossroads"
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(960, 1048)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="PlayerSpawn" type="Marker2D" parent="."]
+position = Vector2(320, 960)
+
+[node name="GateNorth" type="Area2D" parent="."]
+position = Vector2(960, 8)
+groups = ["room_gate"]
+metadata/gate_id = "gate_north"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GateNorth"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="GateEast" type="Area2D" parent="."]
+position = Vector2(1904, 760)
+groups = ["room_gate"]
+metadata/gate_id = "gate_east"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GateEast"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="Crawler" parent="." instance=ExtResource("2")]
+position = Vector2(720, 960)
