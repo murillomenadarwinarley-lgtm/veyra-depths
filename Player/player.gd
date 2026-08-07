@@ -15,6 +15,8 @@ var coyote_time: float = 0.12
 var jump_buffer_time: float = 0.15
 var dash_cooldown_time: float = 0.5
 var attack_cooldown_time: float = 0.3
+## Duración del estado de daño (tras un golpe, antes de recuperar control).
+var hurt_duration: float = 0.35
 var facing: Vector2 = Vector2.RIGHT
 
 var _coyote_time_left: float = 0.0

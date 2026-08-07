@@ -33,7 +33,7 @@ max_health = 5
 [node name="Hurtbox" type="Area2D" parent="."]
 script = ExtResource("5")
 invulnerability_duration = 1.0
-apply_knockback = false
+apply_knockback = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 position = Vector2(0, 4)

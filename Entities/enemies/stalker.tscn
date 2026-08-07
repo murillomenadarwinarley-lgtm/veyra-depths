@@ -61,6 +61,7 @@ position = Vector2(40, 0)
 script = ExtResource("7")
 damage = 1
 knockback_strength = 260.0
+knockback_vertical = -200.0
 hit_once = true
 cooldown = 1.2
 start_active = false

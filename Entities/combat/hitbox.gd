@@ -13,6 +13,8 @@ signal hit(hurtbox: Area2D)
 
 @export var damage: int = 1
 @export var knockback_strength: float = 250.0
+## Empuje vertical al golpear (negativo = hacia arriba). 0.0 = solo horizontal.
+@export var knockback_vertical: float = 0.0
 @export var hit_once: bool = true
 ## Cooldown entre golpes (0.0 = sin cooldown). Útil para daño de contacto.
 @export var cooldown: float = 0.0

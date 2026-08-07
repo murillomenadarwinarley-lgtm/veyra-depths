@@ -1,28 +1,20 @@
 class_name PlayerHurtState
 extends PlayerState
+## Estado de daño: el knockback lo aplica la Hurtbox (desde la fuerza de la
+## hitbox atacante, ver hurtbox.gd). Este estado solo desliza al jugador
+## hasta frenarse y pasa a idle/jump al terminar la duración.
 
-const HURT_DURATION := 0.35
-const KNOCKBACK_SPEED := 300.0
+const HURT_FRICTION := 700.0
 
 var _time_left: float = 0.0
 
-## El knockback empuja en dirección contraria al atacante (message["from"]
-## es la posición del atacante); sin atacante, contra la dirección mirada.
 func enter(message: Dictionary = {}) -> void:
-	_time_left = HURT_DURATION
-	var dir := -player.facing.x
-	if message.has("from"):
-		var from: Vector2 = message["from"]
-		dir = signf(player.global_position.x - from.x)
-		if dir == 0.0:
-			dir = 1.0
-	player.velocity.x = dir * KNOCKBACK_SPEED
-	player.velocity.y = -200.0
-	# TODO: flash de daño
+	_time_left = player.hurt_duration
 
 func physics_process(delta: float) -> void:
 	_time_left -= delta
 	player.apply_gravity(delta)
+	player.velocity.x = move_toward(player.velocity.x, 0.0, HURT_FRICTION * delta)
 	player.move_and_slide()
 	if _time_left <= 0.0:
 		if player.is_on_floor():

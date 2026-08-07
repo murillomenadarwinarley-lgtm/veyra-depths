@@ -52,6 +52,7 @@ func receive_hit(hitbox: Hitbox) -> void:
 			if dir == 0.0:
 				dir = 1.0
 		body.velocity.x = dir * hitbox.knockback_strength
+		body.velocity.y = hitbox.knockback_vertical
 	var invuln := invulnerability_duration
 	if hitbox.invulnerability_duration >= 0.0:
 		invuln = hitbox.invulnerability_duration
