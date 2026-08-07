@@ -6,11 +6,19 @@ const KNOCKBACK_SPEED := 300.0
 
 var _time_left: float = 0.0
 
+## El knockback empuja en dirección contraria al atacante (message["from"]
+## es la posición del atacante); sin atacante, contra la dirección mirada.
 func enter(message: Dictionary = {}) -> void:
 	_time_left = HURT_DURATION
-	player.velocity.x = -player.facing.x * KNOCKBACK_SPEED
+	var dir := -player.facing.x
+	if message.has("from"):
+		var from: Vector2 = message["from"]
+		dir = signf(player.global_position.x - from.x)
+		if dir == 0.0:
+			dir = 1.0
+	player.velocity.x = dir * KNOCKBACK_SPEED
 	player.velocity.y = -200.0
-	# TODO: i-frames, flash de daño, vida (vía Progress o HealthComponent)
+	# TODO: flash de daño
 
 func physics_process(delta: float) -> void:
 	_time_left -= delta

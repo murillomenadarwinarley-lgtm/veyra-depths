@@ -19,5 +19,5 @@ func physics_process(delta: float) -> void:
 		state_machine.change_to(&"idle")
 	elif Input.is_action_just_pressed("dash") and player.can_dash() and Progress.has_ability("dash"):
 		state_machine.change_to(&"dash")
-	elif Input.is_action_just_pressed("attack"):
+	elif Input.is_action_just_pressed("attack") and player.can_attack():
 		state_machine.change_to(&"attack")

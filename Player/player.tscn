@@ -1,11 +1,17 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://Player/player.gd" id="1"]
 [ext_resource type="Script" path="res://Core/fsm/state_machine.gd" id="2"]
 [ext_resource type="Script" path="res://World/cameras/room_camera.gd" id="3"]
+[ext_resource type="Script" path="res://Entities/components/health_component.gd" id="4"]
+[ext_resource type="Script" path="res://Entities/combat/hurtbox.gd" id="5"]
+[ext_resource type="Script" path="res://Entities/combat/hitbox.gd" id="6"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(24, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_attack"]
+size = Vector2(48, 40)
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1")
@@ -15,7 +21,31 @@ script = ExtResource("2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_1")
+shape = SubResource("RectangleShape2D_body")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("3")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("4")
+max_health = 5
+
+[node name="Hurtbox" type="Area2D" parent="."]
+script = ExtResource("5")
+invulnerability_duration = 1.0
+apply_knockback = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, 4)
+shape = SubResource("RectangleShape2D_body")
+
+[node name="AttackHitbox" type="Area2D" parent="."]
+position = Vector2(44, 0)
+script = ExtResource("6")
+damage = 1
+knockback_strength = 250.0
+hit_once = true
+start_active = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackHitbox"]
+shape = SubResource("RectangleShape2D_attack")

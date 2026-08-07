@@ -10,7 +10,7 @@ layout_mode = 0
 offset_left = 12.0
 offset_top = 12.0
 offset_right = 420.0
-offset_bottom = 72.0
+offset_bottom = 96.0
 
 [node name="RoomLabel" type="Label" parent="Panel"]
 layout_mode = 0
@@ -27,3 +27,11 @@ offset_top = 34.0
 offset_right = 396.0
 offset_bottom = 60.0
 text = "Habilidades: -"
+
+[node name="HealthLabel" type="Label" parent="Panel"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 62.0
+offset_right = 396.0
+offset_bottom = 88.0
+text = "Vida: -"

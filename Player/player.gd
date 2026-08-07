@@ -14,18 +14,26 @@ var jump_velocity: float = -520.0
 var coyote_time: float = 0.12
 var jump_buffer_time: float = 0.15
 var dash_cooldown_time: float = 0.5
+var attack_cooldown_time: float = 0.3
 var facing: Vector2 = Vector2.RIGHT
 
 var _coyote_time_left: float = 0.0
 var _jump_buffer_time_left: float = 0.0
 var _dash_cooldown_left: float = 0.0
+var _attack_cooldown_left: float = 0.0
 var _air_jumps: int = 0
 var _jumped_this_frame := false
 
 @onready var state_machine: StateMachine = $StateMachine
+@onready var health: HealthComponent = $Health
+@onready var hurtbox: Hurtbox = $Hurtbox
+@onready var attack_hitbox: Hitbox = $AttackHitbox
 
 func _ready() -> void:
 	add_to_group("player")
+	health.damaged.connect(_on_damaged)
+	health.died.connect(_on_died)
+	attack_hitbox.hit.connect(_on_attack_hit)
 	_register_states()
 
 func _physics_process(delta: float) -> void:
@@ -40,6 +48,7 @@ func _physics_process(delta: float) -> void:
 	_jumped_this_frame = false
 	_jump_buffer_time_left = maxf(_jump_buffer_time_left - delta, 0.0)
 	_dash_cooldown_left = maxf(_dash_cooldown_left - delta, 0.0)
+	_attack_cooldown_left = maxf(_attack_cooldown_left - delta, 0.0)
 	if Input.is_action_just_pressed("jump"):
 		_jump_buffer_time_left = jump_buffer_time
 
@@ -82,6 +91,12 @@ func can_dash() -> bool:
 func use_dash() -> void:
 	_dash_cooldown_left = dash_cooldown_time
 
+func can_attack() -> bool:
+	return _attack_cooldown_left <= 0.0
+
+func use_attack() -> void:
+	_attack_cooldown_left = attack_cooldown_time
+
 func apply_gravity(delta: float) -> void:
 	velocity.y = minf(velocity.y + get_gravity().y * delta, MAX_FALL_SPEED)
 
@@ -94,5 +109,28 @@ func _register_states() -> void:
 	state_machine.add_state(&"hurt", PlayerHurtState.new(state_machine, self))
 	state_machine.change_to(&"idle")
 
+func is_dead() -> bool:
+	return health.is_dead()
+
+## Reinicia salud y estado (al reintentar tras morir).
+func reset() -> void:
+	health.reset()
+	hurtbox.invulnerable = false
+	state_machine.change_to(&"idle")
+
 func take_damage(amount: int) -> void:
-	state_machine.change_to(&"hurt", {"damage": amount})
+	health.take_damage(amount)
+
+func _on_damaged(amount: int, source: Node) -> void:
+	var message := {"damage": amount}
+	if source is Node2D:
+		message["from"] = source.global_position
+	state_machine.change_to(&"hurt", message)
+
+func _on_died() -> void:
+	Progress.register_death()
+	Game.trigger_game_over()
+
+func _on_attack_hit(_hurtbox: Area2D) -> void:
+	# TODO: feedback de golpe (sonido, partículas, hitstop)
+	pass

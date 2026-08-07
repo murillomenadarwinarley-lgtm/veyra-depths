@@ -7,7 +7,13 @@ var _time_left: float = 0.0
 
 func enter(_message: Dictionary = {}) -> void:
 	_time_left = ATTACK_DURATION
-	# TODO: hitbox del ataque, animación
+	player.use_attack()
+	player.attack_hitbox.set_direction(player.facing)
+	player.attack_hitbox.set_active(true)
+	# TODO: animación, SFX
+
+func exit() -> void:
+	player.attack_hitbox.set_active(false)
 
 func physics_process(delta: float) -> void:
 	_time_left -= delta
