@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://World/rooms/room.gd" id="1"]
 [ext_resource type="PackedScene" path="res://Entities/enemies/crawler.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://Entities/enemies/stalker.tscn" id="3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1920, 64)
@@ -40,3 +41,6 @@ shape = SubResource("RectangleShape2D_2")
 
 [node name="Crawler" parent="." instance=ExtResource("2")]
 position = Vector2(720, 960)
+
+[node name="Stalker" parent="." instance=ExtResource("3")]
+position = Vector2(1500, 960)

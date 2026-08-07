@@ -17,6 +17,9 @@ signal hit(hurtbox: Area2D)
 ## Cooldown entre golpes (0.0 = sin cooldown). Útil para daño de contacto.
 @export var cooldown: float = 0.0
 @export var start_active: bool = false
+## Ventana de i-frames que recibe la víctima al ser golpeada por esta
+## hitbox. -1 = la víctima usa la configuración de su hurtbox.
+@export var invulnerability_duration: float = -1.0
 
 var active: bool = false
 

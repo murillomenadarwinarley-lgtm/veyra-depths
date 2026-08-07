@@ -4,6 +4,9 @@ extends Node
 
 @export var damage: int = 2
 @export var cooldown: float = 1.0
+## Ventana de i-frames que recibe la víctima al ser golpeada por este
+## ataque. -1 = la víctima usa su propia configuración de hurtbox.
+@export var invulnerability_duration: float = -1.0
 
 var _last_attack_time: float = -INF
 

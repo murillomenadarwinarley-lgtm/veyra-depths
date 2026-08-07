@@ -52,13 +52,16 @@ func receive_hit(hitbox: Hitbox) -> void:
 			if dir == 0.0:
 				dir = 1.0
 		body.velocity.x = dir * hitbox.knockback_strength
-	if invulnerability_duration > 0.0:
-		_start_invulnerability()
+	var invuln := invulnerability_duration
+	if hitbox.invulnerability_duration >= 0.0:
+		invuln = hitbox.invulnerability_duration
+	if invuln > 0.0:
+		_start_invulnerability(invuln)
 
-func _start_invulnerability() -> void:
+func _start_invulnerability(duration: float) -> void:
 	invulnerable = true
 	invulnerability_started.emit()
-	get_tree().create_timer(invulnerability_duration).timeout.connect(_end_invulnerability)
+	get_tree().create_timer(duration).timeout.connect(_end_invulnerability)
 
 func _end_invulnerability() -> void:
 	invulnerable = false

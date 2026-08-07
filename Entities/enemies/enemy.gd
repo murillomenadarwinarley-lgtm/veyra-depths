@@ -17,6 +17,7 @@ func _ready() -> void:
 	if attack and hitbox:
 		hitbox.damage = attack.damage
 		hitbox.cooldown = attack.cooldown
+		hitbox.invulnerability_duration = attack.invulnerability_duration
 	elif hitbox == null:
 		push_warning("Enemy '%s' sin Hitbox de contacto" % name)
 
