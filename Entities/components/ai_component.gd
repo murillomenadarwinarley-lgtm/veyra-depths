@@ -2,8 +2,10 @@ class_name AIComponent
 extends Node
 ## Componente de IA reutilizable: patrulla -> detecta -> persigue -> ataca
 ## -> vuelve a patrulla si pierde de vista al jugador.
-## Operación por composición: usa MovementComponent para moverse y
-## AttackComponent (junto a la Hitbox del enemigo) para golpear.
+## Operación por composición: usa MovementComponent para moverse.
+## La IA SOLO decide CUÁNDO atacar (rango + cooldown de AttackComponent);
+## el CÓMO ataca (telegrafía -> hitbox -> embestida) lo posee
+## AttackComponent, así una variante de ataque no toca este script.
 ## Todos los parámetros de dificultad son @export para ajustarlos sin
 ## tocar código.
 
@@ -19,15 +21,10 @@ signal state_changed(old_state: AIState, new_state: AIState)
 @export var chase_range: float = 320.0
 @export var attack_range: float = 48.0
 
-# Movimiento.
+# Movimiento (patrulla y persecución; la embestida es del ataque).
 @export var patrol_half_width: float = 120.0
 @export var patrol_speed: float = 60.0
 @export var chase_speed: float = 140.0
-@export var attack_speed: float = 120.0
-
-# Ataque (telegrafía y ventana activa del golpe).
-@export var attack_telegraph_time: float = 0.4
-@export var attack_active_time: float = 0.2
 
 var current_state: AIState = AIState.IDLE
 
@@ -36,11 +33,8 @@ var home_x: float = 0.0
 var _actor: Node2D = null
 var _movement: MovementComponent = null
 var _attack: AttackComponent = null
-var _hitbox: Hitbox = null
 var _player: Node2D = null
 var _patrol_dir: float = 1.0
-var _attack_timer: float = 0.0
-var _in_attack_active: bool = false
 
 func _ready() -> void:
 	_actor = get_parent() as Node2D
@@ -48,7 +42,6 @@ func _ready() -> void:
 		home_x = _actor.global_position.x
 		_movement = _actor.get_component(MovementComponent) as MovementComponent
 		_attack = _actor.get_component(AttackComponent) as AttackComponent
-		_hitbox = _actor.get_node_or_null("Hitbox") as Hitbox
 	current_state = starting_state
 
 func set_state(new_state: AIState) -> void:
@@ -107,44 +100,23 @@ func _tick_chase(delta: float) -> void:
 		set_state(AIState.PATROL)
 		return
 	if dist <= attack_range and _attack != null and _attack.can_attack():
-		_begin_attack()
+		if _attack.start_attack():
+			set_state(AIState.ATTACK)
 		return
 	var dir := 1.0 if _player.global_position.x >= _actor.global_position.x else -1.0
 	_movement.move_towards(Vector2(dir, 0.0), delta, chase_speed)
 
-## Fase 1 (telegrafía): se queda quieto avisando y mirando al jugador.
-## Fase 2 (activa): activa la hitbox y embiste hacia el jugador.
-func _begin_attack() -> void:
-	_in_attack_active = false
-	_attack_timer = attack_telegraph_time
-	set_state(AIState.ATTACK)
-
+## Mientras dura el ataque, la IA se limita a pasarle la dirección hacia el
+## jugador; el ciclo telegrafía -> golpe -> fin lo posee AttackComponent.
+## Al terminar, vuelve a perseguir o a patrullar si perdió de vista.
 func _tick_attack(delta: float) -> void:
-	_attack_timer -= delta
-	if not _in_attack_active:
-		_movement.stop(delta)
-		_face_player()
-		if _attack_timer <= 0.0:
-			_in_attack_active = true
-			_attack_timer = attack_active_time
-			_attack.attack()
-			if _hitbox:
-				_hitbox.set_direction(_movement.facing)
-				_hitbox.set_active(true)
-	else:
-		if _player != null:
-			var dir := 1.0 if _player.global_position.x >= _actor.global_position.x else -1.0
-			_movement.move_towards(Vector2(dir, 0.0), delta, attack_speed)
-		if _attack_timer <= 0.0:
-			if _hitbox:
-				_hitbox.set_active(false)
-			if _player_distance() > chase_range:
-				set_state(AIState.PATROL)
-			else:
-				set_state(AIState.CHASE)
+	if _attack == null or not _attack.process_attack(delta, _dir_to_player()):
+		if _player_distance() > chase_range:
+			set_state(AIState.PATROL)
+		else:
+			set_state(AIState.CHASE)
 
-func _face_player() -> void:
+func _dir_to_player() -> Vector2:
 	if _player == null:
-		return
-	var dir := 1.0 if _player.global_position.x >= _actor.global_position.x else -1.0
-	_movement.facing = Vector2(dir, 0.0)
+		return _movement.facing
+	return Vector2(1.0 if _player.global_position.x >= _actor.global_position.x else -1.0, 0.0)
