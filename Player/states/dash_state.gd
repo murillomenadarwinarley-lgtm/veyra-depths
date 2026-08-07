@@ -8,6 +8,7 @@ var _time_left: float = 0.0
 
 func enter(_message: Dictionary = {}) -> void:
 	_time_left = DASH_DURATION
+	player.use_dash()
 	player.velocity = Vector2(player.facing.x * DASH_SPEED, 0.0)
 	# TODO: efectos de dash (partículas, invulnerabilidad)
 

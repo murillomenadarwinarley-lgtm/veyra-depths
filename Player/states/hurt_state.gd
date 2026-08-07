@@ -14,7 +14,7 @@ func enter(message: Dictionary = {}) -> void:
 
 func physics_process(delta: float) -> void:
 	_time_left -= delta
-	player.velocity.y += player.get_gravity().y * delta
+	player.apply_gravity(delta)
 	player.move_and_slide()
 	if _time_left <= 0.0:
 		if player.is_on_floor():

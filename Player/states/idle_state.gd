@@ -2,15 +2,25 @@ class_name PlayerIdleState
 extends PlayerState
 
 func enter(_message: Dictionary = {}) -> void:
-	player.velocity.x = move_toward(player.velocity.x, 0.0, 240.0)
+	player.velocity.x = 0.0
 	# TODO: animación de idle
 
 func physics_process(_delta: float) -> void:
-	if Input.get_axis("move_left", "move_right") != 0.0:
-		state_machine.change_to(&"run")
-	if Input.is_action_just_pressed("jump"):
+	# move_and_slide mantiene fresco is_on_floor() (cae a jump si no hay suelo).
+	player.move_and_slide()
+	if not player.is_on_floor():
 		state_machine.change_to(&"jump")
-	if Input.is_action_just_pressed("dash") and Progress.has_ability("dash"):
+		return
+	if player.consume_jump_buffer():
+		player.do_jump()
+		state_machine.change_to(&"jump")
+		return
+	if player.get_move_axis() != 0.0:
+		state_machine.change_to(&"run")
+	elif Input.is_action_just_pressed("jump") and player.can_coyote_jump():
+		player.do_jump()
+		state_machine.change_to(&"jump")
+	elif Input.is_action_just_pressed("dash") and player.can_dash() and Progress.has_ability("dash"):
 		state_machine.change_to(&"dash")
-	if Input.is_action_just_pressed("attack"):
+	elif Input.is_action_just_pressed("attack"):
 		state_machine.change_to(&"attack")

@@ -11,6 +11,11 @@ func enter(_message: Dictionary = {}) -> void:
 
 func physics_process(delta: float) -> void:
 	_time_left -= delta
+	if not player.is_on_floor():
+		player.apply_gravity(delta)
 	player.move_and_slide()
 	if _time_left <= 0.0:
-		state_machine.change_to(&"idle")
+		if player.is_on_floor():
+			state_machine.change_to(&"idle")
+		else:
+			state_machine.change_to(&"jump")
