@@ -8,6 +8,6 @@ extends Node2D
 
 func get_component(component_type: GDScript) -> Node:
 	for child in get_children():
-		if child.get_script() == component_type:
+		if is_instance_of(child, component_type):
 			return child
 	return null

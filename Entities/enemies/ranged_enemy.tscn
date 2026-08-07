@@ -1,0 +1,66 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://Entities/enemies/enemy.gd" id="1"]
+[ext_resource type="Script" path="res://Entities/components/health_component.gd" id="2"]
+[ext_resource type="Script" path="res://Entities/components/movement_component.gd" id="3"]
+[ext_resource type="Script" path="res://Entities/components/ai_component.gd" id="4"]
+[ext_resource type="Script" path="res://Entities/enemies/ranged_attack_component.gd" id="5"]
+[ext_resource type="Script" path="res://Entities/combat/hurtbox.gd" id="6"]
+[ext_resource type="PackedScene" path="res://Entities/projectiles/projectile.tscn" id="7"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hurt"]
+radius = 26.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(30, 46)
+
+[node name="RangedEnemy" type="CharacterBody2D"]
+script = ExtResource("1")
+display_name = "Lanzador"
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("2")
+max_health = 3
+
+[node name="Movement" type="Node" parent="."]
+script = ExtResource("3")
+max_speed = 100.0
+gravity = 900.0
+
+[node name="AI" type="Node" parent="."]
+script = ExtResource("4")
+enabled = true
+starting_state = 1
+detection_range = 400.0
+chase_range = 520.0
+attack_range = 320.0
+retreat_range = 140.0
+patrol_half_width = 60.0
+patrol_speed = 30.0
+chase_speed = 110.0
+
+[node name="Attack" type="Node" parent="."]
+script = ExtResource("5")
+damage = 1
+cooldown = 1.6
+invulnerability_duration = 0.8
+telegraph_time = 0.5
+active_time = 0.15
+dash_speed = 0.0
+projectile_scene = ExtResource("7")
+projectile_speed = 300.0
+projectile_damage = 1
+projectile_knockback = 150.0
+projectile_knockback_vertical = 0.0
+projectile_life_time = 3.0
+muzzle_offset = Vector2(36, -6)
+
+[node name="Hurtbox" type="Area2D" parent="."]
+script = ExtResource("6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("CircleShape2D_hurt")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 4)
+shape = SubResource("RectangleShape2D_body")

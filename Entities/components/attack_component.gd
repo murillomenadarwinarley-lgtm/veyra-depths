@@ -45,7 +45,7 @@ func _ready() -> void:
 		_hitbox.damage = damage
 		_hitbox.cooldown = cooldown
 		_hitbox.invulnerability_duration = invulnerability_duration
-	elif _actor:
+	elif _actor and _requires_hitbox():
 		push_warning("AttackComponent: entidad '%s' sin Hitbox: el ataque no hará daño" % _actor.name)
 
 func can_attack() -> bool:
@@ -82,16 +82,25 @@ func process_attack(delta: float, direction: Vector2) -> bool:
 	return phase != Phase.IDLE
 
 ## Punto de extensión: una variante (ataque a distancia, área, combo...)
-## sobreescribe esto en lugar de activar la hitbox (p.ej. dispara un
-## proyectil en `direction`).
+## sobreescribe `_do_hit()` (o directamente `_begin_hit_phase()`) para
+## disparar un proyectil o lo que sea en `direction`.
 func _begin_hit_phase(direction: Vector2) -> void:
 	_phase_time_left = active_time
 	phase = Phase.ACTIVE
 	_last_attack_time = Time.get_ticks_msec() / 1000.0
+	_do_hit(direction)
+	attack_hit_phase.emit()
+
+## Golpe por defecto: activa la hitbox frontal del enemigo.
+func _do_hit(direction: Vector2) -> void:
 	if _hitbox:
 		_hitbox.set_direction(direction)
 		_hitbox.set_active(true)
-	attack_hit_phase.emit()
+
+## False en variantes que no necesitan hitbox propia (p.ej. ataques a
+## distancia): evita el aviso de "sin Hitbox" en _ready.
+func _requires_hitbox() -> bool:
+	return true
 
 func _finish_attack() -> void:
 	if _hitbox:

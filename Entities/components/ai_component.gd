@@ -20,6 +20,10 @@ signal state_changed(old_state: AIState, new_state: AIState)
 @export var detection_range: float = 240.0
 @export var chase_range: float = 320.0
 @export var attack_range: float = 48.0
+## Distancia mínima de seguridad: si el jugador se acerca más que esto,
+## el enemigo huye en vez de perseguir (0.0 = desactivado). Útil para
+## enemigos ranged que no quieren cuerpo a cuerpo.
+@export var retreat_range: float = 0.0
 
 # Movimiento (patrulla y persecución; la embestida es del ataque).
 @export var patrol_half_width: float = 120.0
@@ -99,11 +103,16 @@ func _tick_chase(delta: float) -> void:
 	if _player == null or dist > chase_range:
 		set_state(AIState.PATROL)
 		return
+	var dir := 1.0 if _player.global_position.x >= _actor.global_position.x else -1.0
+	# Mantener distancia: si el jugador se acerca demasiado, huye en vez
+	# de perseguir (genérico: cualquier enemigo puede usarlo).
+	if retreat_range > 0.0 and dist < retreat_range:
+		_movement.move_towards(Vector2(-dir, 0.0), delta, chase_speed)
+		return
 	if dist <= attack_range and _attack != null and _attack.can_attack():
 		if _attack.start_attack():
 			set_state(AIState.ATTACK)
 		return
-	var dir := 1.0 if _player.global_position.x >= _actor.global_position.x else -1.0
 	_movement.move_towards(Vector2(dir, 0.0), delta, chase_speed)
 
 ## Mientras dura el ataque, la IA se limita a pasarle la dirección hacia el
