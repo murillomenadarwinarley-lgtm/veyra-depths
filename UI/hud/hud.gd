@@ -5,11 +5,14 @@ extends CanvasLayer
 @onready var room_label: Label = $Panel/RoomLabel
 @onready var abilities_label: Label = $Panel/AbilitiesLabel
 @onready var health_label: Label = $Panel/HealthLabel
+@onready var soul_label: Label = $Panel/SoulLabel
 
 func _ready() -> void:
 	Progress.room_visited.connect(_on_room_visited)
 	Progress.ability_unlocked.connect(_on_ability_unlocked)
+	Progress.soul_changed.connect(_on_soul_changed)
 	_refresh()
+	_on_soul_changed(Progress.get_soul())
 	# El jugador se crea en el bootstrap justo después de mostrar el HUD.
 	call_deferred("_refresh_health")
 
@@ -38,6 +41,9 @@ func _refresh_health() -> void:
 
 func _on_health_changed(current: int, max_health: int) -> void:
 	health_label.text = "Vida: %d/%d" % [current, max_health]
+
+func _on_soul_changed(amount: int) -> void:
+	soul_label.text = "Alma: %d/%d" % [amount, Progress.MAX_SOUL]
 
 func _on_room_visited(_room_id: String) -> void:
 	_refresh()

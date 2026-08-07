@@ -10,7 +10,7 @@ layout_mode = 0
 offset_left = 12.0
 offset_top = 12.0
 offset_right = 420.0
-offset_bottom = 96.0
+offset_bottom = 124.0
 
 [node name="RoomLabel" type="Label" parent="Panel"]
 layout_mode = 0
@@ -35,3 +35,11 @@ offset_top = 62.0
 offset_right = 396.0
 offset_bottom = 88.0
 text = "Vida: -"
+
+[node name="SoulLabel" type="Label" parent="Panel"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 90.0
+offset_right = 396.0
+offset_bottom = 116.0
+text = "Alma: -"

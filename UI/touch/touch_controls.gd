@@ -4,7 +4,7 @@ extends CanvasLayer
 ## Todos simulan las acciones del Input Map, así que no hay lógica de
 ## juego duplicada. Se muestran solo en dispositivos táctiles.
 
-const ACTIONS := ["move_left", "move_right", "jump", "dash", "attack"]
+const ACTIONS := ["move_left", "move_right", "jump", "dash", "attack", "down", "focus"]
 
 func _ready() -> void:
 	$Buttons/JumpButton.button_down.connect(_on_jump_down)
@@ -13,6 +13,10 @@ func _ready() -> void:
 	$Buttons/DashButton.button_up.connect(_on_dash_up)
 	$Buttons/AttackButton.button_down.connect(_on_attack_down)
 	$Buttons/AttackButton.button_up.connect(_on_attack_up)
+	$Buttons/DownButton.button_down.connect(_on_down_down)
+	$Buttons/DownButton.button_up.connect(_on_down_up)
+	$Buttons/FocusButton.button_down.connect(_on_focus_down)
+	$Buttons/FocusButton.button_up.connect(_on_focus_up)
 
 func _exit_tree() -> void:
 	release_all()
@@ -40,3 +44,15 @@ func _on_attack_down() -> void:
 
 func _on_attack_up() -> void:
 	Input.action_release("attack")
+
+func _on_down_down() -> void:
+	Input.action_press("down")
+
+func _on_down_up() -> void:
+	Input.action_release("down")
+
+func _on_focus_down() -> void:
+	Input.action_press("focus")
+
+func _on_focus_up() -> void:
+	Input.action_release("focus")

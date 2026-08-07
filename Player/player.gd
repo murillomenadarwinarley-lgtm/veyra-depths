@@ -26,6 +26,11 @@ var _attack_cooldown_left: float = 0.0
 var _air_jumps: int = 0
 var _jumped_this_frame := false
 var _was_in_air := false
+## Ataque en curso apuntando hacia abajo (pogo). Lo gestiona attack_state.
+var _attack_is_down := false
+
+## Velocidad de rebote del pogo (golpear enemigos desde arriba en el aire).
+var pogo_velocity: float = -420.0
 
 @onready var state_machine: StateMachine = $StateMachine
 @onready var health: HealthComponent = $Health
@@ -117,6 +122,19 @@ func do_air_jump() -> void:
 func air_jumps_used() -> int:
 	return _air_jumps
 
+## True si el ataque en curso es descendente (pogo).
+func is_down_attack() -> bool:
+	return _attack_is_down
+
+## Rebote del pogo: impulsa hacia arriba y refresca los saltos aéreos
+## (permite encadenar pogos o pogo + doble salto).
+func pogo_bounce() -> void:
+	velocity.y = pogo_velocity
+	_air_jumps = 0
+	_jumped_this_frame = true
+	Feel.dust(global_position + Vector2(0, 18))
+	Audio.play_sfx("jump")
+
 func can_dash() -> bool:
 	return _dash_cooldown_left <= 0.0
 
@@ -140,6 +158,7 @@ func _register_states() -> void:
 	state_machine.add_state(&"jump", PlayerJumpState.new(state_machine, self))
 	state_machine.add_state(&"dash", PlayerDashState.new(state_machine, self))
 	state_machine.add_state(&"attack", PlayerAttackState.new(state_machine, self))
+	state_machine.add_state(&"focus", PlayerFocusState.new(state_machine, self))
 	state_machine.add_state(&"hurt", PlayerHurtState.new(state_machine, self))
 	state_machine.change_to(&"idle")
 
@@ -180,7 +199,15 @@ func _on_died() -> void:
 	Game.trigger_game_over()
 
 func _on_attack_hit(hurtbox: Area2D) -> void:
+	Progress.add_soul(Progress.SOUL_PER_HIT)
 	Feel.hitstop(0.06)
 	Feel.screen_shake(0.18)
 	Feel.sparks(hurtbox.global_position)
 	Audio.play_sfx("hit")
+	# Pogo: en el aire, ataque descendente (o golpear claramente por encima
+	# del enemigo) rebota al jugador en lugar de empujarlo.
+	if not is_on_floor():
+		var enemy := hurtbox.get_parent() as Node2D
+		var above := enemy != null and global_position.y < enemy.global_position.y - 12.0
+		if _attack_is_down or above:
+			pogo_bounce()

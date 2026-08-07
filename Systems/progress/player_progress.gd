@@ -8,6 +8,7 @@ extends Node
 signal ability_unlocked(ability_id: String, level: int)
 signal room_visited(room_id: String)
 signal boss_defeated(boss_id: String)
+signal soul_changed(amount: int)
 
 var unlocked_abilities: Dictionary = {}  # ability_id -> nivel
 var rooms_visited: Array[String] = []
@@ -19,6 +20,13 @@ var checkpoint_room: String = ""
 var checkpoint_marker: String = "PlayerSpawn"
 ## Enemigos derrotados por sala: room_id -> Array[String] (nombres de nodo).
 var enemies_defeated: Dictionary = {}
+## Alma (recurso de combate): se gana golpeando enemigos y se gasta en
+## cura focalizada y (futuras) hechizos. 0-100.
+var soul: int = 0
+
+const MAX_SOUL := 100
+const SOUL_PER_HIT := 6
+const FOCUS_COST := 30
 
 var playtime_seconds: float = 0.0
 var deaths: int = 0
@@ -93,6 +101,22 @@ func is_enemy_defeated(room_id: String, enemy_name: String) -> bool:
 func get_defeated_enemies(room_id: String) -> Array:
 	return enemies_defeated.get(room_id, [])
 
+## Alma: gana por golpear enemigos (SOUL_PER_HIT), gasta en Focus.
+func add_soul(amount: int) -> void:
+	soul = clampi(soul + amount, 0, MAX_SOUL)
+	soul_changed.emit(soul)
+
+## Gasta alma si hay suficiente; devuelve si se pudo.
+func spend_soul(amount: int) -> bool:
+	if soul < amount:
+		return false
+	soul -= amount
+	soul_changed.emit(soul)
+	return true
+
+func get_soul() -> int:
+	return soul
+
 func register_death() -> void:
 	deaths += 1
 
@@ -105,6 +129,8 @@ func reset() -> void:
 	checkpoint_room = ""
 	checkpoint_marker = "PlayerSpawn"
 	enemies_defeated.clear()
+	soul = 0
+	soul_changed.emit(0)
 	playtime_seconds = 0.0
 	deaths = 0
 
@@ -117,6 +143,7 @@ func to_dict() -> Dictionary:
 		"checkpoint_room": checkpoint_room,
 		"checkpoint_marker": checkpoint_marker,
 		"enemies_defeated": enemies_defeated,
+		"soul": soul,
 		"playtime_seconds": playtime_seconds,
 		"deaths": deaths,
 		"inventory": Inventory.items,
@@ -136,6 +163,9 @@ func load_from_dict(data: Dictionary) -> void:
 		player_health = int(data["player_health"])
 	checkpoint_room = String(data.get("checkpoint_room", ""))
 	checkpoint_marker = String(data.get("checkpoint_marker", "PlayerSpawn"))
+	if data.has("soul"):
+		soul = clampi(int(data["soul"]), 0, MAX_SOUL)
+	soul_changed.emit(soul)
 	var enemies_data: Dictionary = data.get("enemies_defeated", {})
 	for room_id in enemies_data:
 		var list: Array = []
