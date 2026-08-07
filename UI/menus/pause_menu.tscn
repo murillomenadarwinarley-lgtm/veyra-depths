@@ -26,6 +26,20 @@ grow_horizontal = 2
 text = "PAUSA"
 horizontal_alignment = 1
 
+[node name="SaveButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = -90.0
+offset_right = 120.0
+offset_bottom = -50.0
+grow_horizontal = 2
+text = "Guardar"
+
 [node name="ResumeButton" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = 8
@@ -53,3 +67,18 @@ offset_right = 120.0
 offset_bottom = 50.0
 grow_horizontal = 2
 text = "Menú principal"
+
+[node name="StatusLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = 60.0
+offset_right = 120.0
+offset_bottom = 90.0
+grow_horizontal = 2
+text = ""
+horizontal_alignment = 1

@@ -64,3 +64,7 @@ shape = SubResource("CircleShape2D_hurt")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 4)
 shape = SubResource("RectangleShape2D_body")
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.1, 1, 0.2, 1)
+polygon = PackedVector2Array(-15, -19, 15, -19, 15, 27, -15, 27)

@@ -35,8 +35,11 @@ func _ready() -> void:
 	add_to_group("player")
 	health.damaged.connect(_on_damaged)
 	health.died.connect(_on_died)
+	health.health_changed.connect(_on_health_changed)
 	attack_hitbox.hit.connect(_on_attack_hit)
 	_register_states()
+	# Espejo de salud hacia Progress (fuente de verdad persistible).
+	Progress.set_player_health(health.health)
 
 func _physics_process(delta: float) -> void:
 	# Al saltar, is_on_floor() sigue siendo true un tick (el impulso se
@@ -143,6 +146,9 @@ func reset() -> void:
 
 func take_damage(amount: int) -> void:
 	health.take_damage(amount)
+
+func _on_health_changed(current: int, _max_health: int) -> void:
+	Progress.set_player_health(current)
 
 func _on_damaged(amount: int, source: Node) -> void:
 	var message := {"damage": amount}

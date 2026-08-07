@@ -15,4 +15,16 @@ func _ready() -> void:
 
 func _on_died() -> void:
 	# TODO: drops, partículas, sonido
+	var room := _find_room()
+	if room is Room:
+		Progress.register_enemy_defeated(room.room_id, name)
 	queue_free()
+
+## Sube por el árbol hasta la sala (Room) a la que pertenece el enemigo.
+func _find_room() -> Node:
+	var current: Node = get_parent()
+	while current != null:
+		if current is Room:
+			return current
+		current = current.get_parent()
+	return null

@@ -39,6 +39,10 @@ script = ExtResource("6")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 shape = SubResource("CircleShape2D_hurt")
 
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(1, 0, 0, 1)
+polygon = PackedVector2Array(-24, -24, 24, -24, 24, 24, -24, 24)
+
 [node name="Hitbox" type="Area2D" parent="."]
 script = ExtResource("7")
 damage = 1

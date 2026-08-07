@@ -23,6 +23,10 @@ script = ExtResource("2")
 position = Vector2(0, 4)
 shape = SubResource("RectangleShape2D_body")
 
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0, 1, 1, 1)
+polygon = PackedVector2Array(-12, -16, 12, -16, 12, 24, -12, 24)
+
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("3")
 

@@ -34,15 +34,18 @@ func bootstrap() -> void:
 		_get_world_root().add_child(player)
 	enter_room(WorldMap.start_room_id)
 
-func enter_room(room_id: String) -> void:
+func enter_room(room_id: String, spawn_marker: String = "") -> void:
 	if not WorldMap.room_exists(room_id):
 		push_warning("RoomStreamer.enter_room: sala desconocida '%s'" % room_id)
 		return
 	var previous := current_room_id
 	var room := load_room(room_id)
 	current_room_id = room_id
+	if spawn_marker.is_empty():
+		spawn_marker = "PlayerSpawn"
 	Progress.mark_room_visited(room_id)
-	position_player_at_spawn(room)
+	Progress.set_checkpoint(room_id, spawn_marker)
+	position_player_at_spawn(room, spawn_marker)
 	configure_camera()
 	stream_neighbors(room_id)
 	room_entered.emit(room_id, previous)
@@ -71,6 +74,7 @@ func load_room(room_id: String) -> Node:
 		return null
 	var room := scene.instantiate()
 	room.name = "Room_%s" % room_id
+	prune_defeated_enemies(room_id, room)
 	_get_world_root().add_child(room)
 	loaded_rooms[room_id] = room
 	return room
@@ -89,14 +93,27 @@ func stream_neighbors(room_id: String) -> void:
 		loaded_rooms.erase(loaded_id)
 		room.queue_free()
 
-func position_player_at_spawn(room: Node) -> void:
+## Sitúa al jugador en un marcador seguro de la sala (por defecto
+## PlayerSpawn). Si el marcador no existe, cae a PlayerSpawn.
+func position_player_at_spawn(room: Node, marker_name: String = "PlayerSpawn") -> void:
 	if player == null:
 		return
-	var spawn := room.get_node_or_null("PlayerSpawn")
+	var spawn := room.get_node_or_null(marker_name)
+	if spawn is not Marker2D:
+		spawn = room.get_node_or_null("PlayerSpawn")
 	if spawn is Marker2D:
 		player.global_position = spawn.global_position
 	else:
 		push_warning("RoomStreamer: '%s' no tiene PlayerSpawn" % room.name)
+
+## Elimina de la sala los enemigos ya derrotados (Progress.enemies_defeated)
+## para que no reaparezcan al recargar. Se identifican por nombre de nodo
+## dentro de la escena de la sala; no requiere tener el mapa en memoria.
+func prune_defeated_enemies(room_id: String, room: Node) -> void:
+	for enemy_name in Progress.get_defeated_enemies(room_id):
+		var node := room.get_node_or_null(enemy_name)
+		if node != null and node.is_in_group("enemies"):
+			node.queue_free()
 
 func configure_camera() -> void:
 	if player == null:

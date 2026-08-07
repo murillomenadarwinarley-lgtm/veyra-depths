@@ -26,6 +26,11 @@ func heal(amount: int) -> void:
 	health = mini(max_health, health + amount)
 	health_changed.emit(health, max_health)
 
+## Fija la salud exacta (p. ej. al cargar partida) y emite el cambio.
+func set_health(value: int) -> void:
+	health = clampi(value, 0, max_health)
+	health_changed.emit(health, max_health)
+
 func die() -> void:
 	if health > 0:
 		var remaining := health

@@ -37,3 +37,7 @@ func unhandled_input(event: InputEvent) -> void:
 		Game.toggle_pause()
 	elif event.is_action_pressed("map"):
 		Game.toggle_map()
+	elif event.is_action_pressed("quick_save"):
+		Saves.save_game()
+	elif event.is_action_pressed("quick_load"):
+		Saves.load_game()

@@ -12,6 +12,13 @@ signal boss_defeated(boss_id: String)
 var unlocked_abilities: Dictionary = {}  # ability_id -> nivel
 var rooms_visited: Array[String] = []
 var bosses_defeated: Array[String] = []
+## Salud actual del jugador (espejo del HealthComponent, para persistir).
+var player_health: int = -1  # -1 = sin jugador creado aún
+## Punto seguro de reaparición: sala + nombre de Marker2D dentro de ella.
+var checkpoint_room: String = ""
+var checkpoint_marker: String = "PlayerSpawn"
+## Enemigos derrotados por sala: room_id -> Array[String] (nombres de nodo).
+var enemies_defeated: Dictionary = {}
 
 var playtime_seconds: float = 0.0
 var deaths: int = 0
@@ -56,6 +63,36 @@ func defeat_boss(boss_id: String) -> void:
 func is_boss_defeated(boss_id: String) -> bool:
 	return bosses_defeated.has(boss_id)
 
+func set_player_health(value: int) -> void:
+	player_health = maxi(value, 0)
+
+func get_player_health() -> int:
+	return player_health
+
+## Marca el punto seguro de reaparición (sala + Marker2D dentro de ella).
+func set_checkpoint(room_id: String, marker: String = "PlayerSpawn") -> void:
+	checkpoint_room = room_id
+	checkpoint_marker = marker
+
+func get_checkpoint_room() -> String:
+	return checkpoint_room
+
+func get_checkpoint_marker() -> String:
+	return checkpoint_marker
+
+## Registra la derrota de un enemigo en su sala (por nombre de nodo).
+func register_enemy_defeated(room_id: String, enemy_name: String) -> void:
+	var list: Array = enemies_defeated.get(room_id, [])
+	if enemy_name not in list:
+		list.append(enemy_name)
+		enemies_defeated[room_id] = list
+
+func is_enemy_defeated(room_id: String, enemy_name: String) -> bool:
+	return enemy_name in enemies_defeated.get(room_id, [])
+
+func get_defeated_enemies(room_id: String) -> Array:
+	return enemies_defeated.get(room_id, [])
+
 func register_death() -> void:
 	deaths += 1
 
@@ -64,6 +101,10 @@ func reset() -> void:
 	rooms_visited.clear()
 	bosses_defeated.clear()
 	Inventory.clear()
+	player_health = -1
+	checkpoint_room = ""
+	checkpoint_marker = "PlayerSpawn"
+	enemies_defeated.clear()
 	playtime_seconds = 0.0
 	deaths = 0
 
@@ -72,6 +113,10 @@ func to_dict() -> Dictionary:
 		"unlocked_abilities": unlocked_abilities,
 		"rooms_visited": rooms_visited,
 		"bosses_defeated": bosses_defeated,
+		"player_health": player_health,
+		"checkpoint_room": checkpoint_room,
+		"checkpoint_marker": checkpoint_marker,
+		"enemies_defeated": enemies_defeated,
 		"playtime_seconds": playtime_seconds,
 		"deaths": deaths,
 		"inventory": Inventory.items,
@@ -87,6 +132,16 @@ func load_from_dict(data: Dictionary) -> void:
 		rooms_visited.append(String(room_id))
 	for boss_id in data.get("bosses_defeated", []):
 		bosses_defeated.append(String(boss_id))
+	if data.has("player_health"):
+		player_health = int(data["player_health"])
+	checkpoint_room = String(data.get("checkpoint_room", ""))
+	checkpoint_marker = String(data.get("checkpoint_marker", "PlayerSpawn"))
+	var enemies_data: Dictionary = data.get("enemies_defeated", {})
+	for room_id in enemies_data:
+		var list: Array = []
+		for enemy_name in enemies_data[room_id]:
+			list.append(String(enemy_name))
+		enemies_defeated[String(room_id)] = list
 	playtime_seconds = data.get("playtime_seconds", 0.0)
 	deaths = data.get("deaths", 0)
 	var inventory_data: Dictionary = data.get("inventory", {})
