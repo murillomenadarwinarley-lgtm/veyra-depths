@@ -85,6 +85,7 @@ func _generate_sfx() -> void:
 	_sfx_streams["land"] = _tone(120.0, 70.0, 0.09, 0.7, 30.0)
 	_sfx_streams["jump"] = _tone(260.0, 480.0, 0.09, 0.35, 20.0)
 	_sfx_streams["death"] = _tone(300.0, 60.0, 0.28, 0.8, 10.0, "square")
+	_sfx_streams["roar"] = _tone(90.0, 40.0, 0.5, 0.9, 24.0, "square")
 
 ## Ruido blanco con paso-bajo de un polo y decaimiento exponencial.
 func _noise_burst(duration: float, volume: float, decay: float, lowpass: float) -> AudioStreamWAV:

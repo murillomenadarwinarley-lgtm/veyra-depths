@@ -199,7 +199,9 @@ func _on_died() -> void:
 	Game.trigger_game_over()
 
 func _on_attack_hit(hurtbox: Area2D) -> void:
-	Progress.add_soul(Progress.SOUL_PER_HIT)
+	var victim := hurtbox.get_parent()
+	var multiplier := 2 if victim != null and victim.is_in_group("boss") else 1
+	Progress.add_soul(Progress.SOUL_PER_HIT * multiplier)
 	Feel.hitstop(0.06)
 	Feel.screen_shake(0.18)
 	Feel.sparks(hurtbox.global_position)
