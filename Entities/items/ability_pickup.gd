@@ -7,6 +7,8 @@ extends Area2D
 const COLOR_DASH := Color(0.3, 0.9, 1.0, 1.0)
 const COLOR_JUMP := Color(0.75, 1.0, 0.55, 1.0)
 const COLOR_DIVE := Color(1.0, 0.6, 0.25, 1.0)
+const COLOR_WALL := Color(0.75, 0.6, 1.0, 1.0)
+const COLOR_CRYSTAL_HEART := Color(0.95, 0.95, 1.0, 1.0)
 
 @export var ability_id: String = "dash"
 
@@ -21,6 +23,10 @@ func _ready() -> void:
 		crystal.color = COLOR_JUMP
 	elif ability_id == "dive":
 		crystal.color = COLOR_DIVE
+	elif ability_id == "wall_jump":
+		crystal.color = COLOR_WALL
+	elif ability_id == "crystal_heart":
+		crystal.color = COLOR_CRYSTAL_HEART
 
 ## Flotación suave del cristal.
 func _process(_delta: float) -> void:

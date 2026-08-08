@@ -15,6 +15,12 @@ var coyote_time: float = 0.12
 var jump_buffer_time: float = 0.15
 var dash_cooldown_time: float = 0.5
 var attack_cooldown_time: float = 0.3
+## Velocidad de caída mientras el jugador se desliza pegado a una pared
+## (requiere la habilidad wall_jump). Más lento que la caída normal.
+var wall_slide_speed: float = 120.0
+## Impulso horizontal del salto de pared (aleja de la pared). Fuerte para
+## cruzar chimeneas estrechas; la vertical usa el impulso de salto completo.
+var wall_jump_horizontal: float = 420.0
 ## Duración del estado de daño (tras un golpe, antes de recuperar control).
 var hurt_duration: float = 0.35
 var facing: Vector2 = Vector2.RIGHT
@@ -119,6 +125,25 @@ func do_air_jump() -> void:
 	_jumped_this_frame = true
 	clear_jump_buffer()
 	Audio.play_sfx("jump")
+
+## True si el jugador está pegado a una pared en el aire con la habilidad
+## wall_jump desbloqueada (condición para deslizarse y saltar de pared).
+func can_wall_jump() -> bool:
+	return Progress.has_ability("wall_jump") and not is_on_floor() and is_on_wall()
+
+## Salto de pared: impulsa horizontalmente alejándose de la pared
+## (dir = la dirección de la normal de la pared, que apunta desde la
+## pared hacia el jugador) y verticalmente con el impulso de salto
+## completo. No consume saltos aéreos: el doble salto sigue disponible,
+## pero usarlo antes deja la escalada sin red.
+func do_wall_jump(dir: float) -> void:
+	velocity.x = dir * wall_jump_horizontal
+	velocity.y = jump_velocity
+	facing = Vector2(dir, 0.0)
+	_jumped_this_frame = true
+	clear_jump_buffer()
+	Feel.dust(global_position + Vector2(0, 16))
+	Audio.play_sfx("walljump")
 
 ## Saltos aéreos consumidos en este vuelo (para tests).
 func air_jumps_used() -> int:

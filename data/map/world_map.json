@@ -31,7 +31,18 @@
       "music": "grotto",
       "bounds": { "left": 1920, "top": 0, "right": 3840, "bottom": 1080 },
       "gates": [
-        { "id": "gate_west", "to_room": "room_crossroads", "requires_ability": "", "requires_boss": "" }
+        { "id": "gate_west", "to_room": "room_crossroads", "requires_ability": "", "requires_boss": "" },
+        { "id": "gate_east", "to_room": "room_ridge_crest", "requires_ability": "double_jump", "requires_boss": "" }
+      ]
+    },
+    {
+      "id": "room_ridge_crest",
+      "scene": "res://World/rooms/rooms/ridge_crest.tscn",
+      "display_name": "La Cresta Escarpada",
+      "music": "ridge",
+      "bounds": { "left": 3840, "top": 0, "right": 5760, "bottom": 1080 },
+      "gates": [
+        { "id": "gate_west", "to_room": "room_emerald_grotto", "requires_ability": "", "requires_boss": "" }
       ]
     },
     {

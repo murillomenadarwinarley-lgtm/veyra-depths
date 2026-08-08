@@ -29,6 +29,18 @@
       "charge_knockback": 420.0,
       "charge_lunge_speed": 260.0,
       "charge_lunge_time": 0.12
+    },
+    {
+      "id": "obsidian_blade",
+      "display_name": "Hoja de Obsidiana",
+      "category": "arma",
+      "description": "Forjada en la oscuridad de la Cresta. El golpe más duro del arsenal: lento, corto de cadencia, devastador. Requiere romper el sello de cristal.",
+      "damage": 3,
+      "arc_size": [76, 54],
+      "knockback": 420.0,
+      "attack_cooldown": 0.34,
+      "soul_multiplier": 2,
+      "charge_time": 0.0
     }
   ]
 }

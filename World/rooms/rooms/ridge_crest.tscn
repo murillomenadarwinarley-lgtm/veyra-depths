@@ -1,0 +1,241 @@
+[gd_scene load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://World/rooms/room.gd" id="1"]
+[ext_resource type="PackedScene" path="res://Entities/checkpoints/checkpoint_station.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://Entities/items/ability_pickup.tscn" id="3"]
+[ext_resource type="Script" path="res://Entities/items/kill_plane.gd" id="4"]
+[ext_resource type="PackedScene" path="res://Entities/enemies/stalker.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://Entities/enemies/leaper.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://Entities/enemies/crawler.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://Entities/encounters/ambush_trigger.tscn" id="8"]
+[ext_resource type="PackedScene" path="res://Entities/items/weapon_pickup.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://Entities/items/crystal_block.tscn" id="10"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(1840, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ledge"]
+size = Vector2(160, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gate"]
+size = Vector2(64, 256)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kill"]
+size = Vector2(200, 128)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
+size = Vector2(240, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mid"]
+size = Vector2(160, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(40, 822)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_tall"]
+size = Vector2(40, 340)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cap"]
+size = Vector2(174, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pillar"]
+size = Vector2(32, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_eastwall"]
+size = Vector2(64, 1100)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ambush"]
+size = Vector2(420, 420)
+
+[node name="RidgeCrest" type="Node2D"]
+script = ExtResource("1")
+room_id = "room_ridge_crest"
+
+[node name="WestLedge" type="StaticBody2D" parent="."]
+position = Vector2(3920, 876)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WestLedge"]
+shape = SubResource("RectangleShape2D_ledge")
+
+[node name="Visual" type="Polygon2D" parent="WestLedge"]
+color = Color(0.3, 0.34, 0.4, 1)
+polygon = PackedVector2Array(-80, -32, 80, -32, 80, 32, -80, 32)
+
+[node name="MainFloor" type="StaticBody2D" parent="."]
+position = Vector2(4840, 1048)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MainFloor"]
+shape = SubResource("RectangleShape2D_floor")
+
+[node name="Visual" type="Polygon2D" parent="MainFloor"]
+color = Color(0.22, 0.25, 0.3, 1)
+polygon = PackedVector2Array(-920, -32, 920, -32, 920, 32, -920, 32)
+
+[node name="EastWall" type="StaticBody2D" parent="."]
+position = Vector2(5760, 500)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EastWall"]
+shape = SubResource("RectangleShape2D_eastwall")
+
+[node name="Visual" type="Polygon2D" parent="EastWall"]
+color = Color(0.22, 0.25, 0.3, 1)
+polygon = PackedVector2Array(-32, -550, 32, -550, 32, 550, -32, 550)
+
+[node name="KillPlane" type="Area2D" parent="."]
+position = Vector2(4800, 1144)
+script = ExtResource("4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KillPlane"]
+shape = SubResource("RectangleShape2D_kill")
+
+[node name="PlayerSpawn" type="Marker2D" parent="."]
+position = Vector2(3960, 790)
+
+[node name="GateWest" type="Area2D" parent="."]
+position = Vector2(3848, 760)
+groups = ["room_gate"]
+metadata/gate_id = "gate_west"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GateWest"]
+shape = SubResource("RectangleShape2D_gate")
+
+[node name="CheckpointStation" parent="." instance=ExtResource("2")]
+position = Vector2(4060, 992)
+
+[node name="AmbushRidge" parent="." instance=ExtResource("8")]
+position = Vector2(4320, 900)
+
+[node name="CollisionShape2D" parent="AmbushRidge" index="0"]
+shape = SubResource("RectangleShape2D_ambush")
+
+[node name="AmbushRidgeStalker" parent="AmbushRidge" instance=ExtResource("5")]
+position = Vector2(-60, 60)
+collision_layer = 0
+collision_mask = 0
+visible = false
+
+[node name="AI" parent="AmbushRidge/AmbushRidgeStalker" index="2"]
+enabled = false
+detection_range = 380.0
+chase_range = 480.0
+chase_speed = 200.0
+patrol_speed = 0.0
+
+[node name="Hurtbox" parent="AmbushRidge/AmbushRidgeStalker" index="4"]
+active = false
+monitoring = false
+
+[node name="AmbushRidgeLeaper" parent="AmbushRidge" instance=ExtResource("6")]
+position = Vector2(100, 60)
+collision_layer = 0
+collision_mask = 0
+visible = false
+
+[node name="AI" parent="AmbushRidge/AmbushRidgeLeaper" index="2"]
+enabled = false
+detection_range = 320.0
+
+[node name="Hurtbox" parent="AmbushRidge/AmbushRidgeLeaper" index="4"]
+active = false
+monitoring = false
+
+[node name="AmbushRidgeCrawler" parent="AmbushRidge" instance=ExtResource("7")]
+position = Vector2(-180, 60)
+collision_layer = 0
+collision_mask = 0
+visible = false
+
+[node name="AI" parent="AmbushRidge/AmbushRidgeCrawler" index="2"]
+enabled = false
+
+[node name="Hurtbox" parent="AmbushRidge/AmbushRidgeCrawler" index="4"]
+active = false
+monitoring = false
+
+[node name="MidPlatform" type="StaticBody2D" parent="."]
+position = Vector2(4480, 880)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MidPlatform"]
+shape = SubResource("RectangleShape2D_mid")
+
+[node name="Visual" type="Polygon2D" parent="MidPlatform"]
+color = Color(0.3, 0.34, 0.4, 1)
+polygon = PackedVector2Array(-80, -16, 80, -16, 80, 16, -80, 16)
+
+[node name="OrbPlatform" type="StaticBody2D" parent="."]
+position = Vector2(4480, 620)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OrbPlatform"]
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="Visual" type="Polygon2D" parent="OrbPlatform"]
+color = Color(0.3, 0.34, 0.4, 1)
+polygon = PackedVector2Array(-120, -16, 120, -16, 120, 16, -120, 16)
+
+[node name="WallJumpOrb" parent="." instance=ExtResource("3")]
+position = Vector2(4480, 578)
+ability_id = "wall_jump"
+
+[node name="LeftWall" type="StaticBody2D" parent="."]
+position = Vector2(4960, 611)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Visual" type="Polygon2D" parent="LeftWall"]
+color = Color(0.3, 0.34, 0.4, 1)
+polygon = PackedVector2Array(-20, -411, 20, -411, 20, 411, -20, 411)
+
+[node name="RightWall" type="StaticBody2D" parent="."]
+position = Vector2(5040, 611)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Visual" type="Polygon2D" parent="RightWall"]
+color = Color(0.3, 0.34, 0.4, 1)
+polygon = PackedVector2Array(-20, -411, 20, -411, 20, 411, -20, 411)
+
+[node name="LeftLedge" type="StaticBody2D" parent="."]
+position = Vector2(4847, 200)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftLedge"]
+shape = SubResource("RectangleShape2D_cap")
+
+[node name="Visual" type="Polygon2D" parent="LeftLedge"]
+color = Color(0.3, 0.34, 0.4, 1)
+polygon = PackedVector2Array(-87, -16, 87, -16, 87, 16, -87, 16)
+
+[node name="RightLedge" type="StaticBody2D" parent="."]
+position = Vector2(5153, 200)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightLedge"]
+shape = SubResource("RectangleShape2D_cap")
+
+[node name="Visual" type="Polygon2D" parent="RightLedge"]
+color = Color(0.3, 0.34, 0.4, 1)
+polygon = PackedVector2Array(-87, -16, 87, -16, 87, 16, -87, 16)
+
+[node name="SummitPillar" type="StaticBody2D" parent="."]
+position = Vector2(5000, 120)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SummitPillar"]
+shape = SubResource("RectangleShape2D_pillar")
+
+[node name="Visual" type="Polygon2D" parent="SummitPillar"]
+color = Color(0.3, 0.34, 0.4, 1)
+polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+
+[node name="CrystalHeartOrb" parent="." instance=ExtResource("3")]
+position = Vector2(5000, 150)
+ability_id = "crystal_heart"
+
+[node name="CrystalSealA" parent="." instance=ExtResource("10")]
+position = Vector2(5288, 984)
+
+[node name="CrystalSealB" parent="." instance=ExtResource("10")]
+position = Vector2(5288, 920)
+
+[node name="ObsidianBlade" parent="." instance=ExtResource("9")]
+position = Vector2(5480, 984)
+weapon_id = "obsidian_blade"

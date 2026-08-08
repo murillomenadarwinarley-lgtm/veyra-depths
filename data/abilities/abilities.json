@@ -24,13 +24,13 @@
       "id": "wall_jump",
       "display_name": "Salto de pared",
       "category": "movilidad",
-      "description": "Permite saltar desde paredes."
+      "description": "Pégate a una pared y salta para escalar chimeneas y cornisas. Desbloquea la Cresta Escarpada."
     },
     {
       "id": "crystal_heart",
       "display_name": "Corazón de cristal",
       "category": "traversal",
-      "description": "Permite romper bloques de cristal con un golpe."
+      "description": "Tu alma sintoniza con el cristal: un golpe de tu arma rompe los bloques de cristal sellados."
     }
   ]
 }

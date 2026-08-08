@@ -137,7 +137,11 @@ func _has_ground_ahead(dir: float) -> bool:
 	)
 	query.collide_with_areas = false
 	query.collide_with_bodies = true
-	query.exclude = [_actor.get_rid()]
+	# Solo los actores con cuerpo físico (CollisionObject2D) tienen RID que
+	# excluir; los de raíz Node2D (p.ej. el Crawler) no pueden auto-excluirse,
+	# pero su colisión es de área y la sonda solo ve cuerpos.
+	if _actor is CollisionObject2D:
+		query.exclude = [(_actor as CollisionObject2D).get_rid()]
 	return not space.intersect_point(query).is_empty()
 
 ## Mientras dura el ataque, la IA se limita a pasarle la dirección hacia el

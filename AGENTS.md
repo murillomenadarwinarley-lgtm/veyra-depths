@@ -19,4 +19,4 @@
 - Habilidades: catálogo en `data/abilities/abilities.json`, registro `Abilities`, concesión vía `Progress.grant_ability`, uso con `Progress.has_ability()`. Nunca strings sueltos en el código.
 - Estados del jugador son `RefCounted` (no Nodes): no usar `get_tree()`/`get_parent()` — usar `player.get_tree()` / `player.get_parent()`.
 - Estado del jugador: dash (abajo+ataque en aire se convierte en buceo con la habilidad "dive").
-- Habilidades actuales: dash, double_jump, dive. Pendientes en el registro: wall_jump, crystal_heart.
+- Habilidades actuales: dash, double_jump, dive, wall_jump, crystal_heart.

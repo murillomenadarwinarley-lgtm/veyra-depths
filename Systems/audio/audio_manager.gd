@@ -90,6 +90,8 @@ func _generate_sfx() -> void:
 	_sfx_streams["dive"] = _tone(90.0, 40.0, 0.18, 0.9, 22.0, "square")
 	_sfx_streams["ambush"] = _tone(90.0, 380.0, 0.4, 0.85, 9.0, "square")
 	_sfx_streams["charge"] = _tone(480.0, 960.0, 0.16, 0.55, 18.0)
+	_sfx_streams["walljump"] = _tone(300.0, 640.0, 0.1, 0.45, 16.0)
+	_sfx_streams["crystal"] = _noise_burst(0.2, 0.7, 26.0, 0.55)
 
 ## Ruido blanco con paso-bajo de un polo y decaimiento exponencial.
 func _noise_burst(duration: float, volume: float, decay: float, lowpass: float) -> AudioStreamWAV:
