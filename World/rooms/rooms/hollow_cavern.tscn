@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://World/rooms/room.gd" id="1"]
+[ext_resource type="PackedScene" path="res://Entities/checkpoints/checkpoint_station.tscn" id="2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1920, 64)
@@ -40,3 +41,6 @@ metadata/gate_id = "gate_north"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GateNorth"]
 shape = SubResource("RectangleShape2D_2")
+
+[node name="CheckpointStation" parent="." instance=ExtResource("2")]
+position = Vector2(520, -120)

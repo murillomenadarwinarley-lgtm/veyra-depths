@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://World/rooms/room.gd" id="1"]
 [ext_resource type="PackedScene" path="res://Entities/enemies/crawler.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://Entities/enemies/stalker.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://Entities/enemies/ranged_enemy.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://Entities/checkpoints/checkpoint_station.tscn" id="5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1920, 64)
@@ -52,3 +53,6 @@ position = Vector2(1500, 960)
 
 [node name="RangedEnemy" parent="." instance=ExtResource("4")]
 position = Vector2(1700, 960)
+
+[node name="CheckpointStation" parent="." instance=ExtResource("5")]
+position = Vector2(520, 960)
