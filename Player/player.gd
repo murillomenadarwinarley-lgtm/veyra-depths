@@ -28,6 +28,8 @@ var _jumped_this_frame := false
 var _was_in_air := false
 ## Ataque en curso apuntando hacia abajo (pogo). Lo gestiona attack_state.
 var _attack_is_down := false
+## True mientras el arco activo corresponde a un arte de carga (más alma).
+var _charged_attack := false
 
 ## Velocidad de rebote del pogo (golpear enemigos desde arriba en el aire).
 var pogo_velocity: float = -420.0
@@ -149,6 +151,10 @@ func can_attack() -> bool:
 func use_attack() -> void:
 	_attack_cooldown_left = attack_cooldown_time
 
+## Arma equipada (definición del catálogo data/weapons/weapons.json).
+func get_weapon() -> WeaponDefinition:
+	return Weapons.get_definition(Progress.get_equipped_weapon())
+
 func apply_gravity(delta: float) -> void:
 	velocity.y = minf(velocity.y + get_gravity().y * delta, MAX_FALL_SPEED)
 
@@ -203,6 +209,9 @@ func _on_died() -> void:
 func _on_attack_hit(hurtbox: Area2D) -> void:
 	var victim := hurtbox.get_parent()
 	var multiplier := 2 if victim != null and victim.is_in_group("boss") else 1
+	var weapon := get_weapon()
+	if weapon != null and _charged_attack:
+		multiplier *= weapon.soul_multiplier
 	Progress.add_soul(Progress.SOUL_PER_HIT * multiplier)
 	Feel.hitstop(0.06)
 	Feel.screen_shake(0.18)

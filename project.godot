@@ -15,6 +15,7 @@ config/icon="res://icon.svg"
 
 Audio="*res://Systems/audio/audio_manager.gd"
 Abilities="*res://Systems/abilities/ability_registry.gd"
+Weapons="*res://Systems/weapons/weapon_registry.gd"
 Inventory="*res://Systems/inventory/inventory.gd"
 Progress="*res://Systems/progress/player_progress.gd"
 Saves="*res://Systems/save/save_manager.gd"

@@ -20,6 +20,9 @@ var checkpoint_room: String = ""
 var checkpoint_marker: String = "PlayerSpawn"
 ## Enemigos derrotados por sala: room_id -> Array[String] (nombres de nodo).
 var enemies_defeated: Dictionary = {}
+## Arma equipada: id del catálogo data/weapons/weapons.json. La espada
+## de óxido es el arma inicial; las demás se consiguen en el mundo.
+var equipped_weapon: String = "rusty_nail"
 ## Alma (recurso de combate): se gana golpeando enemigos y se gasta en
 ## cura focalizada y (futuras) hechizos. 0-100.
 var soul: int = 0
@@ -73,6 +76,17 @@ func defeat_boss(boss_id: String) -> void:
 
 func is_boss_defeated(boss_id: String) -> bool:
 	return bosses_defeated.has(boss_id)
+
+## Equipa un arma del catálogo (no valida propiedad: el que lo llama
+## decide). Se persiste en el save.
+func equip_weapon(weapon_id: String) -> void:
+	if not Weapons.has(weapon_id):
+		push_warning("Progress.equip_weapon: arma desconocida '%s'" % weapon_id)
+		return
+	equipped_weapon = weapon_id
+
+func get_equipped_weapon() -> String:
+	return equipped_weapon
 
 func set_player_health(value: int) -> void:
 	player_health = maxi(value, 0)
@@ -134,6 +148,7 @@ func reset() -> void:
 	enemies_defeated.clear()
 	soul = 0
 	soul_changed.emit(0)
+	equipped_weapon = "rusty_nail"
 	playtime_seconds = 0.0
 	deaths = 0
 
@@ -147,6 +162,7 @@ func to_dict() -> Dictionary:
 		"checkpoint_marker": checkpoint_marker,
 		"enemies_defeated": enemies_defeated,
 		"soul": soul,
+		"equipped_weapon": equipped_weapon,
 		"playtime_seconds": playtime_seconds,
 		"deaths": deaths,
 		"inventory": Inventory.items,
@@ -169,6 +185,9 @@ func load_from_dict(data: Dictionary) -> void:
 	if data.has("soul"):
 		soul = clampi(int(data["soul"]), 0, MAX_SOUL)
 	soul_changed.emit(soul)
+	var equipped := String(data.get("equipped_weapon", "rusty_nail"))
+	if Weapons.has(equipped):
+		equipped_weapon = equipped
 	var enemies_data: Dictionary = data.get("enemies_defeated", {})
 	for room_id in enemies_data:
 		var list: Array = []
