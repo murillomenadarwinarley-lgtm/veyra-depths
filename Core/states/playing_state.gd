@@ -20,11 +20,15 @@ func enter(_message: Dictionary = {}) -> void:
 		RoomStreamer.bootstrap()
 	elif RoomStreamer.player.is_dead():
 		# Reintento tras morir: restaurar salud y volver al último
-		# checkpoint tocado (estación de guardado o PlayerSpawn de la sala).
+		# checkpoint (estación de guardado o sala actual sin ella).
 		RoomStreamer.player.reset()
-		var room: Node = RoomStreamer.loaded_rooms.get(RoomStreamer.current_room_id)
-		if room:
-			RoomStreamer.position_player_at_spawn(room, Progress.get_checkpoint_marker())
+		var checkpoint_room := Progress.get_checkpoint_room()
+		if not checkpoint_room.is_empty() and checkpoint_room != RoomStreamer.current_room_id:
+			RoomStreamer.enter_room(checkpoint_room, Progress.get_checkpoint_marker())
+		else:
+			var room: Node = RoomStreamer.loaded_rooms.get(RoomStreamer.current_room_id)
+			if room:
+				RoomStreamer.position_player_at_spawn(room, Progress.get_checkpoint_marker())
 	elif RoomStreamer.current_room_id.is_empty():
 		RoomStreamer.enter_room(WorldMap.start_room_id)
 

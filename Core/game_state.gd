@@ -37,7 +37,12 @@ func trigger_game_over() -> void:
 	change_to(&"game_over")
 
 func retry() -> void:
-	# TODO: recargar el último guardado (Saves.load_game) antes de volver.
+	# Reaparecer en el último checkpoint con la partida guardada (la
+	# estación guarda al tocarla). El contador de muertes se conserva.
+	var deaths := Progress.deaths
+	if Saves.has_save():
+		Saves.load_game()
+	Progress.deaths = maxi(Progress.deaths, deaths)
 	change_to(&"playing")
 
 func toggle_map() -> void:

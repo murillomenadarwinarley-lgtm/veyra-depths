@@ -44,7 +44,6 @@ func enter_room(room_id: String, spawn_marker: String = "") -> void:
 	if spawn_marker.is_empty():
 		spawn_marker = "PlayerSpawn"
 	Progress.mark_room_visited(room_id)
-	Progress.set_checkpoint(room_id, spawn_marker)
 	position_player_at_spawn(room, spawn_marker)
 	configure_camera()
 	stream_neighbors(room_id)
