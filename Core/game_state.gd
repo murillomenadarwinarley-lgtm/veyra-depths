@@ -43,8 +43,12 @@ func retry() -> void:
 func toggle_map() -> void:
 	if _ui_path == MAP_SCREEN_PATH:
 		hide_ui()
-	else:
+		get_tree().paused = false
+	elif current_name == &"playing":
+		# Solo se abre desde el estado playing; pausa el mundo para
+		# consultar el mapa con tranquilidad (como en Hollow Knight).
 		show_ui(MAP_SCREEN_PATH)
+		get_tree().paused = true
 
 func show_ui(scene_path: String) -> void:
 	hide_ui()

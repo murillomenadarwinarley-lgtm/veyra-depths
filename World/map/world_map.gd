@@ -22,6 +22,9 @@ func load_map(path: String = MAP_PATH) -> void:
 func room_exists(room_id: String) -> bool:
 	return graph.has_room(room_id)
 
+func get_all_rooms() -> Array:
+	return graph.get_all_rooms()
+
 func get_room(room_id: String) -> Dictionary:
 	return graph.get_room(room_id)
 

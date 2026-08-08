@@ -30,6 +30,9 @@ func has_room(room_id: String) -> bool:
 func get_room(room_id: String) -> Dictionary:
 	return _rooms.get(room_id, {})
 
+func get_all_rooms() -> Array:
+	return _rooms.values()
+
 func get_room_by_scene(scene_path: String) -> Dictionary:
 	for entry in _rooms.values():
 		if entry.get("scene", "") == scene_path:
