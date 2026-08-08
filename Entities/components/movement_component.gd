@@ -55,6 +55,14 @@ func stop(delta: float) -> void:
 	v.x = move_toward(v.x, 0.0, friction * delta)
 	velocity = v
 
+## Parada instantánea en horizontal. La usan las guardas (bordes, pozos):
+## el enemigo se clava en el punto de frenado sin inercia, aunque venga a
+## toda velocidad.
+func halt() -> void:
+	var v := velocity
+	v.x = 0.0
+	velocity = v
+
 ## Aplica la velocidad al actor. CharacterBody2D -> move_and_slide();
 ## Node2D -> desplazamiento directo.
 func apply_motion(delta: float) -> void:

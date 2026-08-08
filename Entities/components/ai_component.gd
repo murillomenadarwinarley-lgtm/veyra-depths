@@ -29,10 +29,15 @@ signal state_changed(old_state: AIState, new_state: AIState)
 @export var patrol_half_width: float = 120.0
 @export var patrol_speed: float = 60.0
 @export var chase_speed: float = 140.0
+## Variación aleatoria por instancia (±%): los enemigos del mismo tipo no
+## se mueven en bloque, cada uno con su propio ritmo (menos predecible).
+@export var speed_variation: float = 0.15
 
 var current_state: AIState = AIState.IDLE
 
 var home_x: float = 0.0
+var _patrol_speed: float = 60.0
+var _chase_speed: float = 140.0
 
 var _actor: Node2D = null
 var _movement: MovementComponent = null
@@ -46,6 +51,11 @@ func _ready() -> void:
 		home_x = _actor.global_position.x
 		_movement = _actor.get_component(MovementComponent) as MovementComponent
 		_attack = _actor.get_component(AttackComponent) as AttackComponent
+	var variation := 1.0
+	if speed_variation > 0.0:
+		variation = randf_range(1.0 - speed_variation, 1.0 + speed_variation)
+	_patrol_speed = patrol_speed * variation
+	_chase_speed = chase_speed * variation
 	current_state = starting_state
 
 func set_state(new_state: AIState) -> void:
@@ -97,9 +107,9 @@ func _tick_patrol(delta: float) -> void:
 	elif _patrol_dir < 0.0 and _actor.global_position.x <= home_x - patrol_half_width:
 		_patrol_dir = 1.0
 	if _has_ground_ahead(_patrol_dir):
-		_movement.move_towards(Vector2(_patrol_dir, 0.0), delta, patrol_speed)
+		_movement.move_towards(Vector2(_patrol_dir, 0.0), delta, _patrol_speed)
 	else:
-		_movement.stop(delta)
+		_movement.halt()
 
 func _tick_chase(delta: float) -> void:
 	var dist := _player_distance()
@@ -110,7 +120,7 @@ func _tick_chase(delta: float) -> void:
 	# Mantener distancia: si el jugador se acerca demasiado, huye en vez
 	# de perseguir (genérico: cualquier enemigo puede usarlo).
 	if retreat_range > 0.0 and dist < retreat_range:
-		_movement.move_towards(Vector2(-dir, 0.0), delta, chase_speed)
+		_movement.move_towards(Vector2(-dir, 0.0), delta, _chase_speed)
 		return
 	if dist <= attack_range and _attack != null and _attack.can_attack():
 		if _attack.start_attack():
@@ -119,9 +129,9 @@ func _tick_chase(delta: float) -> void:
 	# No caminar hacia el vacío: si no hay suelo delante, no avanzar
 	# (los enemigos no se tiran a los pozos persiguiendo al jugador).
 	if _has_ground_ahead(dir):
-		_movement.move_towards(Vector2(dir, 0.0), delta, chase_speed)
+		_movement.move_towards(Vector2(dir, 0.0), delta, _chase_speed)
 	else:
-		_movement.stop(delta)
+		_movement.halt()
 
 ## True si hay suelo debajo del borde en `dir` (sonda física bajo el pie).
 ## Evita que los enemigos caminen fuera de plataformas al patrullar o

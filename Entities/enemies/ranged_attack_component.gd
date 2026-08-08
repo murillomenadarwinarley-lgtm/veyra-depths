@@ -17,6 +17,9 @@ extends AttackComponent
 ## Offset del cañón respecto al centro del enemigo (el signo X se invierte
 ## según la dirección de disparo).
 @export var muzzle_offset: Vector2 = Vector2(36, -6)
+## Dispersión aleatoria del disparo (±radianes): la puntería no es perfecta,
+## así cada tiro sale con un pequeño ángulo distinto (menos predecible).
+@export var spread_radians: float = 0.05
 
 ## El ataque a distancia no usa hitbox propia: no hay que avisar si falta.
 func _requires_hitbox() -> bool:
@@ -32,6 +35,8 @@ func _do_hit(direction: Vector2) -> void:
 	var dir := direction.normalized()
 	if dir == Vector2.ZERO:
 		dir = Vector2(_movement.facing.x, 0.0) if _movement else Vector2.RIGHT
+	if spread_radians > 0.0:
+		dir = dir.rotated(randf_range(-spread_radians, spread_radians))
 	var offset := muzzle_offset
 	offset.x *= 1.0 if dir.x >= 0.0 else -1.0
 	projectile.global_position = _actor.global_position + offset

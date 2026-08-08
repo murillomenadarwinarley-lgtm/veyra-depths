@@ -39,15 +39,15 @@ detection_range = 300.0
 chase_range = 340.0
 attack_range = 130.0
 patrol_half_width = 80.0
-patrol_speed = 40.0
-chase_speed = 110.0
+patrol_speed = 55.0
+chase_speed = 165.0
 
 [node name="Attack" type="Node" parent="."]
 script = ExtResource("5")
 damage = 1
-cooldown = 1.4
+cooldown = 1.15
 invulnerability_duration = 0.8
-telegraph_time = 0.35
+telegraph_time = 0.3
 active_time = 0.6
 dash_speed = 0.0
 leap_velocity = Vector2(300, -480)
@@ -64,7 +64,7 @@ damage = 1
 knockback_strength = 300.0
 knockback_vertical = -230.0
 hit_once = true
-cooldown = 1.4
+cooldown = 1.15
 start_active = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
