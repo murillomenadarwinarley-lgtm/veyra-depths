@@ -5,14 +5,14 @@
       "id": "dash",
       "display_name": "Dash",
       "category": "movilidad",
-      "description": "Impulso rápido horizontal. Desbloquea la Gruta Esmeralda.",
+      "description": "Impulso rápido horizontal. Cruza los abismos y desbloquea la Gruta Esmeralda.",
       "max_level": 1
     },
     {
       "id": "double_jump",
       "display_name": "Doble salto",
       "category": "movilidad",
-      "description": "Permite saltar una vez más en el aire."
+      "description": "Permite saltar una vez más en el aire para alcanzar plataformas altas."
     },
     {
       "id": "wall_jump",

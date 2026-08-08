@@ -21,7 +21,7 @@
       "bounds": { "left": 0, "top": -1080, "right": 1920, "bottom": 0 },
       "gates": [
         { "id": "gate_south", "to_room": "room_crossroads", "requires_ability": "", "requires_boss": "" },
-        { "id": "gate_north", "to_room": "room_buried_crypt", "requires_ability": "", "requires_boss": "crypt_warden" }
+        { "id": "gate_north", "to_room": "room_buried_crypt", "requires_ability": "", "requires_boss": "" }
       ]
     },
     {
@@ -41,7 +41,7 @@
       "music": "crypt",
       "bounds": { "left": 0, "top": -2160, "right": 1920, "bottom": -1080 },
       "gates": [
-        { "id": "gate_south", "to_room": "room_hollow_cavern", "requires_ability": "", "requires_boss": "" }
+        { "id": "gate_south", "to_room": "room_hollow_cavern", "requires_ability": "", "requires_boss": "crypt_warden" }
       ]
     }
   ]

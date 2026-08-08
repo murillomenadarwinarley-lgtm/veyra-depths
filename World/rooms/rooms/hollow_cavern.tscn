@@ -1,27 +1,52 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://World/rooms/room.gd" id="1"]
 [ext_resource type="PackedScene" path="res://Entities/checkpoints/checkpoint_station.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://Entities/items/ability_pickup.tscn" id="3"]
+[ext_resource type="Script" path="res://Entities/items/kill_plane.gd" id="4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
-size = Vector2(1920, 64)
+size = Vector2(1250, 64)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
+size = Vector2(470, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3"]
 size = Vector2(64, 256)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4"]
+size = Vector2(200, 128)
 
 [node name="HollowCavern" type="Node2D"]
 script = ExtResource("1")
 room_id = "room_hollow_cavern"
 
-[node name="Ground" type="StaticBody2D" parent="."]
-position = Vector2(960, -32)
+[node name="GroundSouth" type="StaticBody2D" parent="."]
+position = Vector2(625, -32)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundSouth"]
 shape = SubResource("RectangleShape2D_1")
 
-[node name="Visual" type="Polygon2D" parent="Ground"]
+[node name="Visual" type="Polygon2D" parent="GroundSouth"]
 color = Color(0.22, 0.25, 0.3, 1)
-polygon = PackedVector2Array(-960, -32, 960, -32, 960, 32, -960, 32)
+polygon = PackedVector2Array(-625, -32, 625, -32, 625, 32, -625, 32)
+
+[node name="GroundNorth" type="StaticBody2D" parent="."]
+position = Vector2(1685, -32)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundNorth"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="Visual" type="Polygon2D" parent="GroundNorth"]
+color = Color(0.22, 0.25, 0.3, 1)
+polygon = PackedVector2Array(-235, -32, 235, -32, 235, 32, -235, 32)
+
+[node name="KillPlane" type="Area2D" parent="."]
+position = Vector2(1350, 64)
+script = ExtResource("4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KillPlane"]
+shape = SubResource("RectangleShape2D_4")
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
 position = Vector2(320, -120)
@@ -32,15 +57,19 @@ groups = ["room_gate"]
 metadata/gate_id = "gate_south"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GateSouth"]
-shape = SubResource("RectangleShape2D_2")
+shape = SubResource("RectangleShape2D_3")
 
 [node name="GateNorth" type="Area2D" parent="."]
-position = Vector2(960, -1072)
+position = Vector2(1700, -1072)
 groups = ["room_gate"]
 metadata/gate_id = "gate_north"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GateNorth"]
-shape = SubResource("RectangleShape2D_2")
+shape = SubResource("RectangleShape2D_3")
 
 [node name="CheckpointStation" parent="." instance=ExtResource("2")]
 position = Vector2(520, -120)
+
+[node name="DashOrb" parent="." instance=ExtResource("3")]
+position = Vector2(750, -120)
+ability_id = "dash"

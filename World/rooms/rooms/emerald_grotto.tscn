@@ -1,27 +1,55 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://World/rooms/room.gd" id="1"]
 [ext_resource type="PackedScene" path="res://Entities/checkpoints/checkpoint_station.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://Entities/items/ability_pickup.tscn" id="3"]
+[ext_resource type="Script" path="res://Entities/items/kill_plane.gd" id="4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
-size = Vector2(1920, 64)
+size = Vector2(580, 64)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
+size = Vector2(1140, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3"]
 size = Vector2(64, 256)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4"]
+size = Vector2(200, 128)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5"]
+size = Vector2(240, 32)
 
 [node name="EmeraldGrotto" type="Node2D"]
 script = ExtResource("1")
 room_id = "room_emerald_grotto"
 
-[node name="Ground" type="StaticBody2D" parent="."]
-position = Vector2(2880, 1048)
+[node name="GroundSouth" type="StaticBody2D" parent="."]
+position = Vector2(2210, 1048)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundSouth"]
 shape = SubResource("RectangleShape2D_1")
 
-[node name="Visual" type="Polygon2D" parent="Ground"]
+[node name="Visual" type="Polygon2D" parent="GroundSouth"]
 color = Color(0.22, 0.25, 0.3, 1)
-polygon = PackedVector2Array(-960, -32, 960, -32, 960, 32, -960, 32)
+polygon = PackedVector2Array(-290, -32, 290, -32, 290, 32, -290, 32)
+
+[node name="GroundNorth" type="StaticBody2D" parent="."]
+position = Vector2(3270, 1048)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundNorth"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="Visual" type="Polygon2D" parent="GroundNorth"]
+color = Color(0.22, 0.25, 0.3, 1)
+polygon = PackedVector2Array(-570, -32, 570, -32, 570, 32, -570, 32)
+
+[node name="KillPlane" type="Area2D" parent="."]
+position = Vector2(2600, 1144)
+script = ExtResource("4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KillPlane"]
+shape = SubResource("RectangleShape2D_4")
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
 position = Vector2(2240, 960)
@@ -32,7 +60,24 @@ groups = ["room_gate"]
 metadata/gate_id = "gate_west"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GateWest"]
-shape = SubResource("RectangleShape2D_2")
+shape = SubResource("RectangleShape2D_3")
 
 [node name="CheckpointStation" parent="." instance=ExtResource("2")]
 position = Vector2(2440, 960)
+
+[node name="DoubleJumpOrb" parent="." instance=ExtResource("3")]
+position = Vector2(2900, 960)
+ability_id = "double_jump"
+
+[node name="HighPlatform" type="StaticBody2D" parent="."]
+position = Vector2(3400, 860)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HighPlatform"]
+shape = SubResource("RectangleShape2D_5")
+
+[node name="Visual" type="Polygon2D" parent="HighPlatform"]
+color = Color(0.3, 0.34, 0.4, 1)
+polygon = PackedVector2Array(-120, -16, 120, -16, 120, 16, -120, 16)
+
+[node name="CheckpointStationHigh" parent="." instance=ExtResource("2")]
+position = Vector2(3400, 860)
