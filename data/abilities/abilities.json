@@ -15,6 +15,12 @@
       "description": "Permite saltar una vez más en el aire para alcanzar plataformas altas."
     },
     {
+      "id": "dive",
+      "display_name": "Buceo",
+      "category": "combate",
+      "description": "En el aire, pulsa abajo + ataque para caer en picado invulnerable con onda expansiva al aterrizar."
+    },
+    {
       "id": "wall_jump",
       "display_name": "Salto de pared",
       "category": "movilidad",

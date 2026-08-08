@@ -37,7 +37,9 @@ func _find_health() -> HealthComponent:
 	return _body.get_node_or_null("Health") as HealthComponent
 
 func receive_hit(hitbox: Hitbox) -> void:
-	if not active or invulnerable or _health == null or _health.is_dead():
+	if not active or _health == null or _health.is_dead():
+		return
+	if not hitbox.ignore_invulnerability and invulnerable:
 		return
 	var attacker: Node2D = hitbox.get_attacker()
 	if attacker == _body:

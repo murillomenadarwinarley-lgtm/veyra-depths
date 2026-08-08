@@ -15,10 +15,14 @@ var _time_left: float = 0.0
 var _down_attack := false
 
 func enter(_message: Dictionary = {}) -> void:
-	_time_left = ATTACK_DURATION
 	player.use_attack()
-	# En el aire + manteniendo abajo: ataque descendente para pogo.
+	# En el aire + manteniendo abajo: ataque descendente. Con la habilidad
+	# "dive", ese combo es el buceo (se redirige a su estado).
 	_down_attack = not player.is_on_floor() and Input.is_action_pressed("down")
+	if _down_attack and Progress.has_ability("dive"):
+		state_machine.change_to(&"dive")
+		return
+	_time_left = ATTACK_DURATION
 	if _down_attack:
 		player._attack_is_down = true
 		player.attack_hitbox.position = DOWN_HITBOX_POS

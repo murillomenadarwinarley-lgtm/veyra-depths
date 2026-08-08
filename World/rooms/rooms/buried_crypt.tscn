@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://World/rooms/room.gd" id="1"]
 [ext_resource type="PackedScene" path="res://Entities/bosses/crypt_warden.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://Entities/items/ability_pickup.tscn" id="3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1920, 64)
@@ -48,3 +49,7 @@ shape = SubResource("RectangleShape2D_3")
 
 [node name="CryptWarden" parent="." instance=ExtResource("2")]
 position = Vector2(960, -1200)
+
+[node name="DiveOrb" parent="." instance=ExtResource("3")]
+position = Vector2(640, -1160)
+ability_id = "dive"

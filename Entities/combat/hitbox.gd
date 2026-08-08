@@ -22,6 +22,9 @@ signal hit(hurtbox: Area2D)
 ## Ventana de i-frames que recibe la víctima al ser golpeada por esta
 ## hitbox. -1 = la víctima usa la configuración de su hurtbox.
 @export var invulnerability_duration: float = -1.0
+## True si la hitbox ignora los i-frames de la víctima (onda expansiva del
+## buceo: conecta aunque la caída ya haya golpeado a ese enemigo).
+@export var ignore_invulnerability: bool = false
 
 var active: bool = false
 ## Atacante reportado (por defecto el padre). Lo usan los proyectiles del
