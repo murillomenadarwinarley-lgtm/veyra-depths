@@ -1,9 +1,13 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://World/rooms/room.gd" id="1"]
 [ext_resource type="PackedScene" path="res://Entities/checkpoints/checkpoint_station.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://Entities/items/ability_pickup.tscn" id="3"]
 [ext_resource type="Script" path="res://Entities/items/kill_plane.gd" id="4"]
+[ext_resource type="PackedScene" path="res://Entities/enemies/stalker.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://Entities/enemies/leaper.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://Entities/enemies/ranged_enemy.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://Entities/encounters/ambush_trigger.tscn" id="8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(580, 64)
@@ -19,6 +23,9 @@ size = Vector2(200, 128)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5"]
 size = Vector2(240, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6"]
+size = Vector2(340, 460)
 
 [node name="EmeraldGrotto" type="Node2D"]
 script = ExtResource("1")
@@ -81,3 +88,56 @@ polygon = PackedVector2Array(-120, -16, 120, -16, 120, 16, -120, 16)
 
 [node name="CheckpointStationHigh" parent="." instance=ExtResource("2")]
 position = Vector2(3400, 860)
+
+[node name="AmbushLanding" parent="." instance=ExtResource("8")]
+position = Vector2(2820, 880)
+
+[node name="CollisionShape2D" parent="AmbushLanding" index="0"]
+shape = SubResource("RectangleShape2D_6")
+
+[node name="AmbushLandingStalker" parent="AmbushLanding" instance=ExtResource("5")]
+position = Vector2(-70, 70)
+collision_layer = 0
+collision_mask = 0
+visible = false
+
+[node name="AI" parent="AmbushLanding/AmbushLandingStalker" index="2"]
+enabled = false
+detection_range = 400.0
+chase_range = 460.0
+chase_speed = 190.0
+patrol_speed = 0.0
+
+[node name="Hurtbox" parent="AmbushLanding/AmbushLandingStalker" index="4"]
+active = false
+monitoring = false
+
+[node name="AmbushLandingLeaper" parent="AmbushLanding" instance=ExtResource("6")]
+position = Vector2(130, 72)
+collision_layer = 0
+collision_mask = 0
+visible = false
+
+[node name="AI" parent="AmbushLanding/AmbushLandingLeaper" index="2"]
+enabled = false
+detection_range = 340.0
+
+[node name="Hurtbox" parent="AmbushLanding/AmbushLandingLeaper" index="4"]
+active = false
+monitoring = false
+
+[node name="AmbushLandingRanged" parent="AmbushLanding" instance=ExtResource("7")]
+position = Vector2(430, 70)
+collision_layer = 0
+collision_mask = 0
+visible = false
+
+[node name="AI" parent="AmbushLanding/AmbushLandingRanged" index="2"]
+enabled = false
+detection_range = 460.0
+chase_range = 580.0
+attack_range = 360.0
+
+[node name="Hurtbox" parent="AmbushLanding/AmbushLandingRanged" index="4"]
+active = false
+monitoring = false

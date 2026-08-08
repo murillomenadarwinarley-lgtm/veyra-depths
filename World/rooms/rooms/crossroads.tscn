@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://World/rooms/room.gd" id="1"]
 [ext_resource type="PackedScene" path="res://Entities/enemies/crawler.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://Entities/enemies/stalker.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://Entities/enemies/ranged_enemy.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://Entities/checkpoints/checkpoint_station.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://Entities/encounters/ambush_trigger.tscn" id="6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1920, 64)
@@ -56,3 +57,53 @@ position = Vector2(1700, 960)
 
 [node name="CheckpointStation" parent="." instance=ExtResource("5")]
 position = Vector2(520, 960)
+
+[node name="AmbushCrossroads" parent="." instance=ExtResource("6")]
+position = Vector2(960, 880)
+
+[node name="AmbushCrawlerA" parent="AmbushCrossroads" instance=ExtResource("2")]
+position = Vector2(-320, 112)
+visible = false
+
+[node name="Movement" parent="AmbushCrossroads/AmbushCrawlerA" index="1"]
+gravity = 0.0
+
+[node name="AI" parent="AmbushCrossroads/AmbushCrawlerA" index="2"]
+enabled = false
+chase_speed = 150.0
+patrol_speed = 0.0
+
+[node name="Hurtbox" parent="AmbushCrossroads/AmbushCrawlerA" index="4"]
+active = false
+monitoring = false
+
+[node name="AmbushCrawlerB" parent="AmbushCrossroads" instance=ExtResource("2")]
+position = Vector2(320, 112)
+visible = false
+
+[node name="Movement" parent="AmbushCrossroads/AmbushCrawlerB" index="1"]
+gravity = 0.0
+
+[node name="AI" parent="AmbushCrossroads/AmbushCrawlerB" index="2"]
+enabled = false
+chase_speed = 150.0
+patrol_speed = 0.0
+
+[node name="Hurtbox" parent="AmbushCrossroads/AmbushCrawlerB" index="4"]
+active = false
+monitoring = false
+
+[node name="AmbushStalker" parent="AmbushCrossroads" instance=ExtResource("3")]
+position = Vector2(0, 112)
+collision_layer = 0
+collision_mask = 0
+visible = false
+
+[node name="AI" parent="AmbushCrossroads/AmbushStalker" index="2"]
+enabled = false
+chase_speed = 180.0
+patrol_speed = 0.0
+
+[node name="Hurtbox" parent="AmbushCrossroads/AmbushStalker" index="4"]
+active = false
+monitoring = false

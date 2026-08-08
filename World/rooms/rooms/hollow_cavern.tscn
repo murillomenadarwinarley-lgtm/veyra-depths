@@ -1,9 +1,12 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://World/rooms/room.gd" id="1"]
 [ext_resource type="PackedScene" path="res://Entities/checkpoints/checkpoint_station.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://Entities/items/ability_pickup.tscn" id="3"]
 [ext_resource type="Script" path="res://Entities/items/kill_plane.gd" id="4"]
+[ext_resource type="PackedScene" path="res://Entities/enemies/leaper.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://Entities/enemies/ranged_enemy.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://Entities/encounters/ambush_trigger.tscn" id="7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1250, 64)
@@ -16,6 +19,9 @@ size = Vector2(64, 256)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4"]
 size = Vector2(200, 128)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5"]
+size = Vector2(350, 480)
 
 [node name="HollowCavern" type="Node2D"]
 script = ExtResource("1")
@@ -73,3 +79,38 @@ position = Vector2(520, -120)
 [node name="DashOrb" parent="." instance=ExtResource("3")]
 position = Vector2(750, -120)
 ability_id = "dash"
+
+[node name="AmbushPit" parent="." instance=ExtResource("7")]
+position = Vector2(1050, -180)
+
+[node name="CollisionShape2D" parent="AmbushPit" index="0"]
+shape = SubResource("RectangleShape2D_5")
+
+[node name="AmbushPitLeaper" parent="AmbushPit" instance=ExtResource("5")]
+position = Vector2(-350, 92)
+collision_layer = 0
+collision_mask = 0
+visible = false
+
+[node name="AI" parent="AmbushPit/AmbushPitLeaper" index="2"]
+enabled = false
+
+[node name="Hurtbox" parent="AmbushPit/AmbushPitLeaper" index="4"]
+active = false
+monitoring = false
+
+[node name="AmbushPitRanged" parent="AmbushPit" instance=ExtResource("6")]
+position = Vector2(650, 92)
+collision_layer = 0
+collision_mask = 0
+visible = false
+
+[node name="AI" parent="AmbushPit/AmbushPitRanged" index="2"]
+enabled = false
+detection_range = 420.0
+chase_range = 540.0
+attack_range = 340.0
+
+[node name="Hurtbox" parent="AmbushPit/AmbushPitRanged" index="4"]
+active = false
+monitoring = false

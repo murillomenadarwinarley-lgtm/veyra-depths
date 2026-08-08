@@ -47,6 +47,13 @@ func _ready() -> void:
 		_hitbox.invulnerability_duration = invulnerability_duration
 	elif _actor and _requires_hitbox():
 		push_warning("AttackComponent: entidad '%s' sin Hitbox: el ataque no hará daño" % _actor.name)
+	# Patrón claro: el parpadeo durante la telegrafía avisa del golpe
+	# (respuesta a "cuándo esquivar").
+	attack_started.connect(_on_attack_started)
+
+func _on_attack_started() -> void:
+	if _actor != null:
+		Feel.flash(_actor, Color.WHITE, telegraph_time)
 
 func can_attack() -> bool:
 	return phase == Phase.IDLE and Time.get_ticks_msec() / 1000.0 - _last_attack_time >= cooldown

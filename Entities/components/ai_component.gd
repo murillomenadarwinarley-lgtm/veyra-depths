@@ -96,7 +96,10 @@ func _tick_patrol(delta: float) -> void:
 		_patrol_dir = -1.0
 	elif _patrol_dir < 0.0 and _actor.global_position.x <= home_x - patrol_half_width:
 		_patrol_dir = 1.0
-	_movement.move_towards(Vector2(_patrol_dir, 0.0), delta, patrol_speed)
+	if _has_ground_ahead(_patrol_dir):
+		_movement.move_towards(Vector2(_patrol_dir, 0.0), delta, patrol_speed)
+	else:
+		_movement.stop(delta)
 
 func _tick_chase(delta: float) -> void:
 	var dist := _player_distance()
@@ -113,7 +116,29 @@ func _tick_chase(delta: float) -> void:
 		if _attack.start_attack():
 			set_state(AIState.ATTACK)
 		return
-	_movement.move_towards(Vector2(dir, 0.0), delta, chase_speed)
+	# No caminar hacia el vacío: si no hay suelo delante, no avanzar
+	# (los enemigos no se tiran a los pozos persiguiendo al jugador).
+	if _has_ground_ahead(dir):
+		_movement.move_towards(Vector2(dir, 0.0), delta, chase_speed)
+	else:
+		_movement.stop(delta)
+
+## True si hay suelo debajo del borde en `dir` (sonda física bajo el pie).
+## Evita que los enemigos caminen fuera de plataformas al patrullar o
+## perseguir. Si la sonda falla (sin space_state), se asume seguro.
+func _has_ground_ahead(dir: float) -> bool:
+	if _actor == null or not _actor.is_inside_tree():
+		return true
+	var space := _actor.get_world_2d().direct_space_state
+	var query := PhysicsPointQueryParameters2D.new()
+	query.position = Vector2(
+		_actor.global_position.x + dir * 16.0,
+		_actor.global_position.y + 34.0
+	)
+	query.collide_with_areas = false
+	query.collide_with_bodies = true
+	query.exclude = [_actor.get_rid()]
+	return not space.intersect_point(query).is_empty()
 
 ## Mientras dura el ataque, la IA se limita a pasarle la dirección hacia el
 ## jugador; el ciclo telegrafía -> golpe -> fin lo posee AttackComponent.
