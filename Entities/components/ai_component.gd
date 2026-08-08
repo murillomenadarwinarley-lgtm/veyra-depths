@@ -32,12 +32,19 @@ signal state_changed(old_state: AIState, new_state: AIState)
 ## Variación aleatoria por instancia (±%): los enemigos del mismo tipo no
 ## se mueven en bloque, cada uno con su propio ritmo (menos predecible).
 @export var speed_variation: float = 0.15
+## Modo vuelo: sin gravedad, patrulla flotando (vaivén en X + cabeceo en Y)
+## y persigue al jugador en los DOS ejes. Requiere MovementComponent en
+## modo vuelo. Los enemigos voladores no respetan bordes ni pozos.
+@export var flying: bool = false
 
 var current_state: AIState = AIState.IDLE
 
 var home_x: float = 0.0
+var home_y: float = 0.0
 var _patrol_speed: float = 60.0
 var _chase_speed: float = 140.0
+## Desfase aleatorio del cabeceo de vuelo: los voladores no baten al unísono.
+var _phase_offset: float = 0.0
 
 var _actor: Node2D = null
 var _movement: MovementComponent = null
@@ -49,8 +56,10 @@ func _ready() -> void:
 	_actor = get_parent() as Node2D
 	if _actor:
 		home_x = _actor.global_position.x
+		home_y = _actor.global_position.y
 		_movement = _actor.get_component(MovementComponent) as MovementComponent
 		_attack = _actor.get_component(AttackComponent) as AttackComponent
+	_phase_offset = randf_range(0.0, TAU)
 	var variation := 1.0
 	if speed_variation > 0.0:
 		variation = randf_range(1.0 - speed_variation, 1.0 + speed_variation)
@@ -80,7 +89,8 @@ func _physics_process(delta: float) -> void:
 	if not enabled or _movement == null or _actor == null:
 		return
 	_player = _get_player()
-	_movement.apply_gravity(delta)
+	if not flying:
+		_movement.apply_gravity(delta)
 	match current_state:
 		AIState.IDLE:
 			_tick_idle(delta)
@@ -97,7 +107,8 @@ func _tick_idle(delta: float) -> void:
 	if _player_distance() <= detection_range:
 		set_state(AIState.CHASE)
 
-## Va y viene en [home - half, home + half].
+## Va y viene en [home - half, home + half]. En modo vuelo flota: vaivén
+## en X más un cabeceo sinusoidal en Y alrededor de la altitud de origen.
 func _tick_patrol(delta: float) -> void:
 	if _player_distance() <= detection_range:
 		set_state(AIState.CHASE)
@@ -106,6 +117,13 @@ func _tick_patrol(delta: float) -> void:
 		_patrol_dir = -1.0
 	elif _patrol_dir < 0.0 and _actor.global_position.x <= home_x - patrol_half_width:
 		_patrol_dir = 1.0
+	if flying:
+		var target_y: float = home_y + sin(Time.get_ticks_msec() / 1000.0 + _phase_offset) \
+				* patrol_half_width * 0.5
+		_movement.move_towards_2d(
+			Vector2(_patrol_dir, signf(target_y - _actor.global_position.y)),
+			delta, _patrol_speed)
+		return
 	if _has_ground_ahead(_patrol_dir):
 		_movement.move_towards(Vector2(_patrol_dir, 0.0), delta, _patrol_speed)
 	else:
@@ -125,6 +143,14 @@ func _tick_chase(delta: float) -> void:
 	if dist <= attack_range and _attack != null and _attack.can_attack():
 		if _attack.start_attack():
 			set_state(AIState.ATTACK)
+		return
+	# En modo vuelo se persigue en ambos ejes, sin respetar bordes ni pozos:
+	# el volador ataca desde el aire en línea recta hacia el jugador.
+	if flying:
+		_movement.move_towards_2d(Vector2(
+			signf(_player.global_position.x - _actor.global_position.x),
+			signf(_player.global_position.y - _actor.global_position.y)
+		), delta, _chase_speed)
 		return
 	# No caminar hacia el vacío: si no hay suelo delante, no avanzar
 	# (los enemigos no se tiran a los pozos persiguiendo al jugador).

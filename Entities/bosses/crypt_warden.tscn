@@ -20,7 +20,7 @@ display_name = "Guardián de la Cripta"
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("2")
-max_health = 30
+max_health = 120
 
 [node name="Hurtbox" type="Area2D" parent="."]
 script = ExtResource("3")

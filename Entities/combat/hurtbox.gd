@@ -44,6 +44,12 @@ func receive_hit(hitbox: Hitbox) -> void:
 	var attacker: Node2D = hitbox.get_attacker()
 	if attacker == _body:
 		return
+	# Sin daño amigo: atacante y víctima del mismo equipo no se dañan entre
+	# sí. Los enemigos no se golpean unos a otros (ni a los jefes); el daño
+	# cruzado solo existe entre equipos opuestos (jugador <-> enemigo).
+	if attacker != null and _body != null \
+			and attacker.is_in_group("player") == _body.is_in_group("player"):
+		return
 	damage_taken.emit(hitbox.damage, attacker)
 	_health.take_damage(hitbox.damage, attacker)
 	if apply_knockback and _body is CharacterBody2D:

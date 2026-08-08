@@ -3,6 +3,12 @@ extends Camera2D
 ## Cámara del jugador limitada a los límites de la sala actual.
 ## RoomStreamer.configure_camera() la configura con los bounds del grafo
 ## (data/map/world_map.json). Vive como hijo del jugador y lo sigue.
+## El zoom es una CONSTANTE cercana (estilo Silksong): nunca se ata a los
+## bounds de la sala ni crece con el tamaño del mapa, así el jugador
+## siempre se ve igual de grande en pantalla.
+
+## Zoom fijo de la cámara (1.0 = distancia original, 2.0 = el doble de cerca).
+const CAMERA_ZOOM := 2.0
 
 @export var view_offset: Vector2 = Vector2(0, -48)
 ## Amplitud máxima del shake (píxeles) cuando el trauma llega a 1.0.
@@ -10,6 +16,10 @@ extends Camera2D
 
 var _trauma: float = 0.0
 var _base_offset: Vector2 = Vector2.ZERO
+
+func _ready() -> void:
+	# Zoom fijo, independiente del tamaño de la sala o del mapa.
+	zoom = Vector2(CAMERA_ZOOM, CAMERA_ZOOM)
 
 func setup(room_bounds: Dictionary) -> void:
 	var left: float = room_bounds.get("left", 0.0)

@@ -1,0 +1,69 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://Entities/enemies/enemy.gd" id="1"]
+[ext_resource type="Script" path="res://Entities/components/health_component.gd" id="2"]
+[ext_resource type="Script" path="res://Entities/components/movement_component.gd" id="3"]
+[ext_resource type="Script" path="res://Entities/components/ai_component.gd" id="4"]
+[ext_resource type="Script" path="res://Entities/components/attack_component.gd" id="5"]
+[ext_resource type="Script" path="res://Entities/combat/hurtbox.gd" id="6"]
+[ext_resource type="Script" path="res://Entities/combat/hitbox.gd" id="7"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hurt"]
+radius = 18.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hit"]
+radius = 20.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 8.0
+
+[node name="Flier" type="CharacterBody2D"]
+script = ExtResource("1")
+display_name = "Espectro Volador"
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("2")
+max_health = 5
+
+[node name="Movement" type="Node" parent="."]
+script = ExtResource("3")
+max_speed = 80.0
+flying = true
+
+[node name="AI" type="Node" parent="."]
+script = ExtResource("4")
+flying = true
+detection_range = 300.0
+chase_range = 420.0
+attack_range = 30.0
+chase_speed = 175.0
+
+[node name="Attack" type="Node" parent="."]
+script = ExtResource("5")
+damage = 1
+cooldown = 1.0
+
+[node name="Hurtbox" type="Area2D" parent="."]
+script = ExtResource("6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("CircleShape2D_hurt")
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.62, 0.4, 0.75, 1)
+polygon = PackedVector2Array(-24, -6, 0, -22, 24, -6, 0, 14)
+
+[node name="Hitbox" type="Area2D" parent="."]
+script = ExtResource("7")
+damage = 1
+knockback_strength = 260.0
+knockback_vertical = -180.0
+hit_once = false
+cooldown = 1.0
+start_active = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("CircleShape2D_hit")
+
+[node name="Body" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_body")

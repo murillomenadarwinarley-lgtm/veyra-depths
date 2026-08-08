@@ -10,6 +10,8 @@ extends Node
 @export var friction: float = 1000.0
 @export var gravity: float = 900.0
 @export var max_fall_speed: float = 900.0
+## Modo vuelo: sin gravedad y con movimiento también en Y (enemigos voladores).
+@export var flying: bool = false
 
 var facing: Vector2 = Vector2.RIGHT
 
@@ -33,6 +35,8 @@ var velocity: Vector2:
 		_velocity = value
 
 func apply_gravity(delta: float) -> void:
+	if flying:
+		return
 	var v := velocity
 	v.y = minf(v.y + gravity * delta, max_fall_speed)
 	velocity = v
@@ -54,6 +58,19 @@ func stop(delta: float) -> void:
 	var v := velocity
 	v.x = move_toward(v.x, 0.0, friction * delta)
 	velocity = v
+
+## Variante aérea de move_towards(): acelera también en Y (la usan los
+## enemigos voladores, que no aplican gravedad).
+func move_towards_2d(direction: Vector2, delta: float, speed: float = -1.0) -> void:
+	var target_speed: float = max_speed if speed < 0.0 else speed
+	var v := velocity
+	v.x = move_toward(v.x, direction.x * target_speed, acceleration * delta)
+	v.y = move_toward(v.y, direction.y * target_speed, acceleration * delta)
+	velocity = v
+	if direction.x > 0.01:
+		facing = Vector2.RIGHT
+	elif direction.x < -0.01:
+		facing = Vector2.LEFT
 
 ## Parada instantánea en horizontal. La usan las guardas (bordes, pozos):
 ## el enemigo se clava en el punto de frenado sin inercia, aunque venga a

@@ -61,7 +61,18 @@ func _on_area_entered(area: Area2D) -> void:
 		return
 	if not area.is_in_group("hurtbox"):
 		return
-	if area.get_parent() == get_parent():
+	var target: Node2D = area.get_parent() as Node2D
+	if target == get_parent():
+		return
+	if get_parent().name.begins_with("PlayerSpell"):
+		print("DBG-HITBOX ", get_path(), " -> ", area.get_path())
+	# Sin daño amigo: atacante y víctima del mismo equipo se descartan AQUÍ,
+	# antes del cooldown, para que un golpe entre aliados no consuma la
+	# cadencia de ataque (p.ej. dos voladores convergiendo sobre el jugador
+	# no deben anularse el golpe mutuamente).
+	var attacker := get_attacker()
+	if attacker != null and target != null \
+			and attacker.is_in_group("player") == target.is_in_group("player"):
 		return
 	if cooldown > 0.0 and Time.get_ticks_msec() / 1000.0 - _last_hit_time < cooldown:
 		return

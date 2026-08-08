@@ -110,6 +110,10 @@ func _requires_hitbox() -> bool:
 	return true
 
 func _finish_attack() -> void:
+	# Desactivar SIEMPRE la hitbox al terminar: el siguiente ataque la
+	# reactiva y ese toggle de monitoring re-emite area_entered por los
+	# solapamientos ya existentes (única vía fiable de daño repetido de
+	# contacto; mantenerla activa rompería el ciclo).
 	if _hitbox:
 		_hitbox.set_active(false)
 	phase = Phase.IDLE
